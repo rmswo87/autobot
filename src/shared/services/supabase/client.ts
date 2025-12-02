@@ -19,12 +19,8 @@ if (!supabaseUrl || !supabaseAnonKey) {
   
   console.error(errorMessage)
   
-  // 프로덕션에서는 에러를 던져서 명확히 알림
-  if (isProduction) {
-    throw new Error('Supabase environment variables are required in production')
-  }
-  
-  // 개발 환경에서는 경고만
+  // 프로덕션에서도 앱이 크래시되지 않도록 경고만 출력
+  // (환경 변수가 없어도 앱은 실행되지만 인증은 작동하지 않음)
   console.warn('⚠️ Using placeholder values. Authentication will not work.')
 }
 

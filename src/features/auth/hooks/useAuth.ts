@@ -9,17 +9,74 @@ export function useAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   useEffect(() => {
-    // 초기 사용자 로드
-    loadUser()
+    let isMounted = true
+    let loadingTimeout: NodeJS.Timeout | null = null
+    let isInitialized = false
+
+    // 타임아웃 설정 (3초 후 강제로 로딩 해제 - 안전장치)
+    loadingTimeout = setTimeout(() => {
+      if (isMounted && !isInitialized) {
+        console.warn('Auth initialization timeout - forcing loading state to false')
+        setIsLoading(false)
+        isInitialized = true
+      }
+    }, 3000)
+
+    // 초기 세션 확인
+    const initializeAuth = async () => {
+      try {
+        // 먼저 세션 확인
+        const session = await authService.getSession()
+        
+        if (session) {
+          // 세션이 있으면 사용자 정보 가져오기
+          const currentUser = await authService.getCurrentUser()
+          if (isMounted) {
+            setUser(currentUser)
+            setIsAuthenticated(!!currentUser)
+          }
+        } else {
+          // 세션이 없으면 인증되지 않은 상태
+          if (isMounted) {
+            setUser(null)
+            setIsAuthenticated(false)
+          }
+        }
+      } catch (error) {
+        console.error('Failed to initialize auth:', error)
+        // 에러 발생 시에도 로딩 상태 해제
+        if (isMounted) {
+          setUser(null)
+          setIsAuthenticated(false)
+        }
+      } finally {
+        // 항상 로딩 상태 해제
+        if (isMounted) {
+          isInitialized = true
+          setIsLoading(false)
+          if (loadingTimeout) {
+            clearTimeout(loadingTimeout)
+            loadingTimeout = null
+          }
+        }
+      }
+    }
+
+    // 즉시 초기화 시작
+    initializeAuth()
 
     // 인증 상태 변경 감지
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        if (!isMounted) return
+
         try {
           if (session) {
             const currentUser = await authService.getCurrentUser()
-            setUser(currentUser)
-            setIsAuthenticated(!!currentUser)
+            if (isMounted) {
+              setUser(currentUser)
+              setIsAuthenticated(!!currentUser)
+            }
             
             // OAuth 로그인 성공 시 알림 (SIGNED_IN 이벤트만, OAuth에서 온 경우)
             if (event === 'SIGNED_IN') {
@@ -37,21 +94,32 @@ export function useAuth() {
               }
             }
           } else {
-            setUser(null)
-            setIsAuthenticated(false)
+            if (isMounted) {
+              setUser(null)
+              setIsAuthenticated(false)
+            }
           }
         } catch (error) {
           console.error('Error in auth state change:', error)
-          setUser(null)
-          setIsAuthenticated(false)
+          if (isMounted) {
+            setUser(null)
+            setIsAuthenticated(false)
+          }
         } finally {
-          setIsLoading(false)
+          if (isMounted && !isInitialized) {
+            // 초기화가 완료되지 않았을 때만 로딩 상태 업데이트
+            isInitialized = true
+            setIsLoading(false)
+            if (loadingTimeout) clearTimeout(loadingTimeout)
+          }
         }
       }
     )
 
     return () => {
+      isMounted = false
       subscription.unsubscribe()
+      if (loadingTimeout) clearTimeout(loadingTimeout)
     }
   }, [])
 
