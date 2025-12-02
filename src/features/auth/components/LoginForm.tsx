@@ -152,9 +152,10 @@ export function LoginForm() {
                 </svg>
                 GitHub로 로그인
               </Button>
-              <button
+              <Button
                 type="button"
-                className="w-full h-9 relative overflow-hidden rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
+                variant="outline"
+                className="w-full"
                 onClick={async () => {
                   try {
                     await signInWithKakao()
@@ -166,12 +167,11 @@ export function LoginForm() {
                 }}
                 disabled={isLoading || authLoading}
               >
-                <img
-                  src="/kakao_login_medium_narrow.png"
-                  alt="카카오 로그인"
-                  className="h-full w-auto object-contain"
-                />
-              </button>
+                <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 3c5.799 0 10.5 3.664 10.5 8.185 0 2.625-1.84 4.89-4.52 6.41l-.896.41.342.94c.74 2.03.52 3.934-.514 5.38-.477.66-1.223 1.14-2.04 1.313-.57.12-1.16.12-1.75.12-2.48 0-4.5-.66-6.02-1.88l-.03-.02-.03-.02c-1.24-.75-2.22-1.66-2.91-2.72l-.02-.03-.02-.03C2.19 15.5 1.5 13.18 1.5 11.185 1.5 6.664 6.201 3 12 3z" />
+                </svg>
+                카카오 로그인
+              </Button>
             </div>
 
             <div className="text-center text-sm">
