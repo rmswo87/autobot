@@ -167,7 +167,7 @@ export function SignupForm() {
               </Button>
               <button
                 type="button"
-                className="w-full relative overflow-hidden rounded-md hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full h-9 relative overflow-hidden rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
                 onClick={async () => {
                   try {
                     await signInWithKakao()
@@ -182,7 +182,7 @@ export function SignupForm() {
                 <img
                   src="/kakao_login_medium_narrow.png"
                   alt="카카오 로그인"
-                  className="w-full h-auto"
+                  className="h-full w-auto object-contain"
                 />
               </button>
             </div>

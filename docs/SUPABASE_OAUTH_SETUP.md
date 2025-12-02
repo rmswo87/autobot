@@ -16,29 +16,45 @@
 ### 2. Google OAuth 설정
 
 1. **Google** 프로바이더 찾기
-2. **Enable Google** 토글 활성화
+2. **Enable Google** 토글 활성화 (중요: 반드시 활성화해야 함!)
 3. 다음 정보 입력 (실제 값은 `docs/API_KEYS.md` 참조):
    - **Client ID (for OAuth)**: `YOUR_GOOGLE_CLIENT_ID`
    - **Client Secret (for OAuth)**: `YOUR_GOOGLE_CLIENT_SECRET`
-4. **Save** 클릭
+4. **Save** 버튼 클릭
+5. ✅ **"Enabled" 상태가 표시되는지 확인**
 
 ### 3. GitHub OAuth 설정
 
 1. **GitHub** 프로바이더 찾기
-2. **Enable GitHub** 토글 활성화
+2. **Enable GitHub** 토글 활성화 (중요: 반드시 활성화해야 함!)
 3. 다음 정보 입력 (실제 값은 `docs/API_KEYS.md` 참조):
    - **Client ID (for OAuth)**: `YOUR_GITHUB_CLIENT_ID`
    - **Client Secret (for OAuth)**: `YOUR_GITHUB_CLIENT_SECRET`
-4. **Save** 클릭
+4. **Save** 버튼 클릭
+5. ✅ **"Enabled" 상태가 표시되는지 확인**
 
 ### 4. Kakao OAuth 설정
 
 1. **Kakao** 프로바이더 찾기
-2. **Enable Kakao** 토글 활성화
+2. **Enable Kakao** 토글 활성화 (중요: 반드시 활성화해야 함!)
 3. 다음 정보 입력 (실제 값은 `docs/API_KEYS.md` 참조):
    - **Client ID (for OAuth)**: `YOUR_KAKAO_REST_API_KEY`
    - **Client Secret (for OAuth)**: `YOUR_KAKAO_CLIENT_SECRET`
-4. **Save** 클릭
+4. **Save** 버튼 클릭
+5. ✅ **"Enabled" 상태가 표시되는지 확인**
+
+## ⚠️ 중요: "provider is not enabled" 에러 해결
+
+만약 OAuth 로그인 시 다음 에러가 발생한다면:
+```json
+{"code":400,"error_code":"validation_failed","msg":"Unsupported provider: provider is not enabled"}
+```
+
+**해결 방법:**
+1. Supabase 대시보드에서 해당 프로바이더의 **Enable** 토글이 **켜져 있는지** 확인
+2. Client ID와 Client Secret이 정확히 입력되었는지 확인
+3. **Save** 버튼을 클릭했는지 확인
+4. 페이지를 새로고침하여 설정이 저장되었는지 확인
 
 ---
 
