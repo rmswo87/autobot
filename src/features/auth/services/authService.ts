@@ -1,4 +1,4 @@
-import { supabase } from '@/shared/services/supabase'
+import { supabase, validateSupabaseConfig } from '@/shared/services/supabase'
 import type { LoginCredentials, SignupCredentials, User } from '../types'
 
 export const authService = {
@@ -88,6 +88,7 @@ export const authService = {
   },
 
   async signInWithGoogle() {
+    validateSupabaseConfig()
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
@@ -99,6 +100,7 @@ export const authService = {
   },
 
   async signInWithGithub() {
+    validateSupabaseConfig()
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
@@ -110,6 +112,7 @@ export const authService = {
   },
 
   async signInWithKakao() {
+    validateSupabaseConfig()
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'kakao',
       options: {

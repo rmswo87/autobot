@@ -1,2 +1,2 @@
-export { supabase } from './client'
+export { supabase, validateSupabaseConfig } from './client'
 

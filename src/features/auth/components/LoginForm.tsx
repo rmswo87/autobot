@@ -97,7 +97,15 @@ export function LoginForm() {
                 type="button"
                 variant="outline"
                 className="w-full"
-                onClick={() => signInWithGoogle()}
+                onClick={async () => {
+                  try {
+                    await signInWithGoogle()
+                  } catch (err) {
+                    toast.error('로그인 실패', {
+                      description: err instanceof Error ? err.message : '구글 로그인에 실패했습니다.',
+                    })
+                  }
+                }}
                 disabled={isLoading || authLoading}
               >
                 <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
@@ -124,7 +132,15 @@ export function LoginForm() {
                 type="button"
                 variant="outline"
                 className="w-full"
-                onClick={() => signInWithGithub()}
+                onClick={async () => {
+                  try {
+                    await signInWithGithub()
+                  } catch (err) {
+                    toast.error('로그인 실패', {
+                      description: err instanceof Error ? err.message : '깃허브 로그인에 실패했습니다.',
+                    })
+                  }
+                }}
                 disabled={isLoading || authLoading}
               >
                 <svg className="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
@@ -140,7 +156,15 @@ export function LoginForm() {
                 type="button"
                 variant="outline"
                 className="w-full"
-                onClick={() => signInWithKakao()}
+                onClick={async () => {
+                  try {
+                    await signInWithKakao()
+                  } catch (err) {
+                    toast.error('로그인 실패', {
+                      description: err instanceof Error ? err.message : '카카오 로그인에 실패했습니다.',
+                    })
+                  }
+                }}
                 disabled={isLoading || authLoading}
               >
                 <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
