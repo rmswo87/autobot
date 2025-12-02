@@ -2,11 +2,14 @@ import { Routes as RouterRoutes, Route, Navigate } from 'react-router-dom'
 import { ProtectedRoute } from '@/shared/components/common'
 import { LoginForm, SignupForm } from '@/features/auth/components'
 import { SettingsPage } from '@/features/settings/components'
+import { DashboardLayout } from '@/shared/components/layout/DashboardLayout'
+import { DashboardPage } from '@/features/dashboard/components'
 
 // 임시 컴포넌트 (개발 중)
 const TempPage = ({ title }: { title: string }) => (
-  <div className="flex items-center justify-center min-h-screen">
-    <h1 className="text-2xl font-bold">{title} - 개발 중</h1>
+  <div className="space-y-4">
+    <h1 className="text-3xl font-bold">{title}</h1>
+    <p className="text-muted-foreground">이 기능은 현재 개발 중입니다.</p>
   </div>
 )
 
@@ -17,12 +20,14 @@ export function Routes() {
       <Route path="/login" element={<LoginForm />} />
       <Route path="/signup" element={<SignupForm />} />
 
-      {/* Protected Routes */}
+      {/* Protected Routes with Layout */}
       <Route
         path="/dashboard"
         element={
           <ProtectedRoute>
-            <TempPage title="대시보드" />
+            <DashboardLayout>
+              <DashboardPage />
+            </DashboardLayout>
           </ProtectedRoute>
         }
       />
@@ -30,7 +35,9 @@ export function Routes() {
         path="/settings"
         element={
           <ProtectedRoute>
-            <SettingsPage />
+            <DashboardLayout>
+              <SettingsPage />
+            </DashboardLayout>
           </ProtectedRoute>
         }
       />
@@ -38,7 +45,9 @@ export function Routes() {
         path="/blogger"
         element={
           <ProtectedRoute>
-            <TempPage title="블로거" />
+            <DashboardLayout>
+              <TempPage title="블로거" />
+            </DashboardLayout>
           </ProtectedRoute>
         }
       />
@@ -46,7 +55,9 @@ export function Routes() {
         path="/music"
         element={
           <ProtectedRoute>
-            <TempPage title="음원" />
+            <DashboardLayout>
+              <TempPage title="음원" />
+            </DashboardLayout>
           </ProtectedRoute>
         }
       />
@@ -54,7 +65,9 @@ export function Routes() {
         path="/youtube"
         element={
           <ProtectedRoute>
-            <TempPage title="유튜브" />
+            <DashboardLayout>
+              <TempPage title="유튜브" />
+            </DashboardLayout>
           </ProtectedRoute>
         }
       />

@@ -82,12 +82,18 @@ export function SettingsPage() {
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-4xl">
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight">설정</h1>
+        <p className="text-muted-foreground mt-2">
+          API 키를 설정하여 서비스를 사용하세요.
+        </p>
+      </div>
       <Card>
         <CardHeader>
-          <CardTitle>설정</CardTitle>
+          <CardTitle>API 키 관리</CardTitle>
           <CardDescription>
-            API 키를 설정하여 서비스를 사용하세요. 각 API 키는 암호화되어 저장됩니다.
+            각 API 키는 암호화되어 저장됩니다. 서비스 사용을 위해 필요한 API 키를 입력하세요.
           </CardDescription>
         </CardHeader>
         <CardContent>
