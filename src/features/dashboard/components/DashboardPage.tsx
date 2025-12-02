@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/shared/components/ui/card'
-import { LayoutDashboard, FileText, Music, Youtube, TrendingUp, Clock } from 'lucide-react'
+import { FileText, Music, Youtube, TrendingUp, Clock } from 'lucide-react'
 
 export function DashboardPage() {
   const stats = [
