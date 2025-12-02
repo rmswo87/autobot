@@ -14,7 +14,7 @@ export function useAuth() {
 
     // 인증 상태 변경 감지
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      async (_event, session) => {
         try {
           if (session) {
             const currentUser = await authService.getCurrentUser()

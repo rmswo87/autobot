@@ -34,7 +34,7 @@ export const apiKeyService = {
     return data
   },
 
-  async validateApiKey(type: string, key: string): Promise<boolean> {
+  async validateApiKey(_type: string, key: string): Promise<boolean> {
     // TODO: 각 API 키 유효성 검증 로직 구현
     // 현재는 기본 검증만 수행
     return key.length > 0

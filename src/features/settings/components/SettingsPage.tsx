@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/sha
 import { Label } from '@/shared/components/ui/label'
 
 export function SettingsPage() {
-  const { user } = useAuthContext()
+  useAuthContext() // 인증 확인용
   const [isLoading, setIsLoading] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)

@@ -23,24 +23,16 @@ export function SignupForm() {
     setIsLoading(true)
 
     try {
-      const result = await signup(email, password, name || undefined)
+      await signup(email, password, name || undefined)
       
-      // Supabase는 이메일 인증이 필요한 경우 user가 null일 수 있음
-      if (result?.user && !result.user.email_confirmed_at) {
-        // 이메일 인증 안내
-        toast.info('이메일 인증이 필요합니다', {
-          description: '가입하신 이메일 주소로 인증 링크를 보냈습니다. 이메일을 확인해주세요.',
-          duration: 5000,
-        })
-        // 로그인 페이지로 이동
-        navigate('/login')
-      } else {
-        // 이메일 인증이 필요 없는 경우 (설정에 따라)
-        toast.success('회원가입이 완료되었습니다!', {
-          duration: 2000,
-        })
-        navigate('/dashboard')
-      }
+      // Supabase는 이메일 인증이 필요한 경우를 기본으로 함
+      // 이메일 인증 안내
+      toast.info('이메일 인증이 필요합니다', {
+        description: '가입하신 이메일 주소로 인증 링크를 보냈습니다. 이메일을 확인해주세요.',
+        duration: 5000,
+      })
+      // 로그인 페이지로 이동
+      navigate('/login')
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : '회원가입에 실패했습니다.'
       setError(errorMessage)
