@@ -14,12 +14,28 @@ export function useAuth() {
 
     // 인증 상태 변경 감지
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
+      async (event, session) => {
         try {
           if (session) {
             const currentUser = await authService.getCurrentUser()
             setUser(currentUser)
             setIsAuthenticated(!!currentUser)
+            
+            // OAuth 로그인 성공 시 알림 (SIGNED_IN 이벤트만, OAuth에서 온 경우)
+            if (event === 'SIGNED_IN') {
+              // URL에 hash fragment가 있으면 OAuth 콜백임
+              const isOAuthCallback = window.location.hash.includes('access_token') || 
+                                     window.location.search.includes('code')
+              
+              if (isOAuthCallback) {
+                // 동적 import로 toast 사용
+                const { toast } = await import('sonner')
+                toast.success('로그인 성공!', {
+                  description: '환영합니다!',
+                  duration: 2000,
+                })
+              }
+            }
           } else {
             setUser(null)
             setIsAuthenticated(false)

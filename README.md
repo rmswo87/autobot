@@ -51,9 +51,11 @@ npm run build
 
 3. **환경 변수 설정**
    Vercel 프로젝트 설정에서 다음 환경 변수를 추가하세요:
-   - `VITE_SUPABASE_URL`
-   - `VITE_SUPABASE_ANON_KEY`
+   - `VITE_SUPABASE_URL`: `https://zlxewiendvczathlaueu.supabase.co`
+   - `VITE_SUPABASE_ANON_KEY`: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpseGV3aWVuZHZjemF0aGxhdWV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NzY1NjgsImV4cCI6MjA4MDI1MjU2OH0.5YthNPk02Y0gnwK7ap9rpku0ip_Gm8gHw-P5VGVdxFg`
    - `VITE_API_URL` (선택사항)
+   
+   상세 가이드: [VERCEL_ENV_SETUP.md](./docs/VERCEL_ENV_SETUP.md)
 
 4. **배포**
    - "Deploy" 버튼 클릭
@@ -102,6 +104,8 @@ src/
 - [아키텍처 설계](./docs/ARCHITECTURE.md)
 - [세션 연속성 문서](./docs/SESSION_CONTINUITY.md)
 - [API 키 관리](./docs/API_KEYS.md)
+- [Vercel 환경 변수 설정](./docs/VERCEL_ENV_SETUP.md)
+- [Supabase OAuth 설정](./docs/SUPABASE_OAUTH_SETUP.md)
 
 ## 📝 라이선스
 
