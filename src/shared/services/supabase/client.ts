@@ -10,9 +10,12 @@ const isProduction = import.meta.env.PROD
 console.log('[DEBUG] Supabase Client Initialization:', {
   hasUrl: !!supabaseUrl,
   hasKey: !!supabaseAnonKey,
-  urlPrefix: supabaseUrl ? supabaseUrl.substring(0, 30) + '...' : 'MISSING',
-  keyPrefix: supabaseAnonKey ? supabaseAnonKey.substring(0, 20) + '...' : 'MISSING',
+  urlPrefix: supabaseUrl ? supabaseUrl.substring(0, 50) + '...' : 'MISSING',
+  keyPrefix: supabaseAnonKey ? supabaseAnonKey.substring(0, 30) + '...' : 'MISSING',
   isProduction,
+  urlLength: supabaseUrl?.length || 0,
+  keyLength: supabaseAnonKey?.length || 0,
+  timestamp: new Date().toISOString(),
 })
 
 if (!supabaseUrl || !supabaseAnonKey) {
@@ -40,8 +43,10 @@ export const supabase = createClient(
 )
 
 console.log('[DEBUG] Supabase client created:', {
-  url: supabaseUrl || 'PLACEHOLDER',
+  url: supabaseUrl ? supabaseUrl.substring(0, 50) + '...' : 'PLACEHOLDER',
   isPlaceholder: !supabaseUrl || !supabaseAnonKey,
+  hasValidConfig: !!(supabaseUrl && supabaseAnonKey),
+  timestamp: new Date().toISOString(),
 })
 
 // 환경 변수 검증 헬퍼 함수

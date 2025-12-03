@@ -74,30 +74,62 @@ export const authService = {
   },
 
   async getCurrentUser(): Promise<User | null> {
-    console.log('[DEBUG] getCurrentUser() called')
+    const startTime = Date.now()
+    console.log('[DEBUG] getCurrentUser() called', {
+      timestamp: new Date().toISOString(),
+    })
+    
     try {
-      const { data: { user }, error } = await supabase.auth.getUser()
+      console.log('[DEBUG] Calling supabase.auth.getUser()...')
+      
+      // 타임아웃 설정 (5초)
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        setTimeout(() => {
+          reject(new Error('getUser() timeout after 5 seconds'))
+        }, 5000)
+      })
+      
+      const getUserPromise = supabase.auth.getUser()
+      console.log('[DEBUG] getUser() promise created, waiting for response...')
+      
+      // Promise.race로 타임아웃과 함께 실행
+      const result = await Promise.race([getUserPromise, timeoutPromise])
+      const { data: { user }, error } = result
+      const duration = Date.now() - startTime
       
       console.log('[DEBUG] getCurrentUser() result:', {
         hasUser: !!user,
         hasError: !!error,
-        errorMessage: error?.message,
-        userId: user?.id,
-        userEmail: user?.email,
+        errorMessage: error?.message || 'no-error',
+        errorCode: error?.status || 'no-code',
+        userId: user?.id || 'no-id',
+        userEmail: user?.email || 'no-email',
+        duration: `${duration}ms`,
+        timestamp: new Date().toISOString(),
       })
       
       if (error) {
+        console.log('[DEBUG] getCurrentUser() - Error received:', {
+          message: error.message,
+          status: error.status,
+          name: error.name,
+        })
+        
         // 인증되지 않은 경우는 에러가 아니라 null 반환
-        if (error.message.includes('JWT') || error.message.includes('session')) {
-          console.log('[DEBUG] getCurrentUser() - No valid session, returning null')
+        if (error.message.includes('JWT') || error.message.includes('session') || error.message.includes('token')) {
+          console.log('[DEBUG] getCurrentUser() - No valid session/token, returning null')
           return null
         }
-        console.error('[ERROR] getCurrentUser() error:', error)
+        console.error('[ERROR] getCurrentUser() error:', {
+          error,
+          message: error.message,
+          status: error.status,
+        })
         throw error
       }
       
       if (!user) {
-        console.log('[DEBUG] getCurrentUser() - No user, returning null')
+        console.log('[DEBUG] getCurrentUser() - No user in response, returning null')
         return null
       }
       
@@ -116,9 +148,30 @@ export const authService = {
         hasName: !!transformedUser.name,
       })
       
+      console.log('[DEBUG] getCurrentUser() - Successfully transformed user, returning:', {
+        id: transformedUser.id,
+        email: transformedUser.email,
+        hasName: !!transformedUser.name,
+        timestamp: new Date().toISOString(),
+      })
+      
       return transformedUser
     } catch (error) {
-      console.error('[ERROR] getCurrentUser() exception:', error)
+      const duration = Date.now() - startTime
+      console.error('[ERROR] getCurrentUser() exception:', {
+        error,
+        errorMessage: error instanceof Error ? error.message : 'unknown-error',
+        errorName: error instanceof Error ? error.name : 'unknown',
+        errorStack: error instanceof Error ? error.stack : 'no-stack',
+        duration: `${duration}ms`,
+        timestamp: new Date().toISOString(),
+      })
+      
+      // 타임아웃 에러인 경우 특별 처리
+      if (error instanceof Error && error.message.includes('timeout')) {
+        console.error('[ERROR] getUser() request timed out - possible network issue')
+      }
+      
       return null
     }
   },

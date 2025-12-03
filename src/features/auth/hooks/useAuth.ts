@@ -28,11 +28,13 @@ export function useAuth() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log('[DEBUG] onAuthStateChange triggered:', {
-          event,
+          event: event || 'undefined',
           hasSession: !!session,
-          sessionUserId: session?.user?.id,
+          sessionUserId: session?.user?.id || 'no-user-id',
+          sessionAccessToken: session?.access_token ? session.access_token.substring(0, 20) + '...' : 'no-token',
           isMounted,
           isInitialized,
+          timestamp: new Date().toISOString(),
         })
 
         if (!isMounted) {
@@ -42,20 +44,46 @@ export function useAuth() {
 
         try {
           if (session) {
-            console.log('[DEBUG] Session exists, fetching current user...')
-            // 세션이 있으면 사용자 정보 가져오기
-            const currentUser = await authService.getCurrentUser()
-            console.log('[DEBUG] Current user fetched:', {
-              hasUser: !!currentUser,
-              userId: currentUser?.id,
+            console.log('[DEBUG] Session exists, extracting user from session...', {
+              sessionExpiresAt: session.expires_at,
+              sessionExpiresIn: session.expires_in,
+              hasUser: !!session.user,
+              userId: session.user?.id,
+              timestamp: new Date().toISOString(),
             })
             
-            if (isMounted) {
-              setUser(currentUser)
-              setIsAuthenticated(!!currentUser)
-              console.log('[DEBUG] User state updated:', {
-                isAuthenticated: !!currentUser,
+            // 세션에서 직접 user 정보 가져오기 (getUser() 호출 대신)
+            // 세션에 이미 user 정보가 있으므로 별도 API 호출 불필요
+            if (session.user) {
+              const sessionUser = session.user
+              const currentUser: User = {
+                id: sessionUser.id,
+                email: sessionUser.email || '',
+                name: sessionUser.user_metadata?.name || sessionUser.user_metadata?.full_name || undefined,
+                created_at: sessionUser.created_at || new Date().toISOString(),
+                updated_at: sessionUser.updated_at || new Date().toISOString(),
+              }
+              
+              console.log('[DEBUG] User extracted from session:', {
+                hasUser: !!currentUser,
+                userId: currentUser.id,
+                userEmail: currentUser.email,
+                timestamp: new Date().toISOString(),
               })
+              
+              if (isMounted) {
+                setUser(currentUser)
+                setIsAuthenticated(true)
+                console.log('[DEBUG] User state updated:', {
+                  isAuthenticated: true,
+                })
+              }
+            } else {
+              console.warn('[WARN] Session exists but no user in session')
+              if (isMounted) {
+                setUser(null)
+                setIsAuthenticated(false)
+              }
             }
             
             // OAuth 로그인 성공 시 알림 (SIGNED_IN 이벤트만, OAuth에서 온 경우)
