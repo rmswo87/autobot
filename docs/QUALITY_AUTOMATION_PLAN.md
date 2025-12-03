@@ -9,10 +9,16 @@
 ## 🎯 프로젝트 목표 재정의
 
 ### 핵심 가치
-1. **고품질**: AI가 찍어내는 저품질 콘텐츠가 아닌 최적화된 콘텐츠
-2. **학습 기반**: 성공 사례 분석 및 패턴 학습
-3. **최적화**: Lighthouse 100점, SEO 최적화, 사용자 경험 최적화
-4. **자동화**: 반복 작업 자동화하되 품질은 유지
+1. **멀티 테넌트**: 각 고객이 개인의 API를 입력하여 사용하는 배포용 SaaS
+2. **고품질**: AI가 찍어내는 저품질 콘텐츠가 아닌 최적화된 콘텐츠
+3. **학습 기반**: 성공 사례 분석 및 패턴 학습
+4. **최적화**: Lighthouse 100점, SEO 최적화, 사용자 경험 최적화
+5. **자동화**: 반복 작업 자동화하되 품질은 유지
+
+### 아키텍처 원칙
+- **사용자별 API 관리**: 각 사용자가 자신의 API 키를 입력하고 관리
+- **데이터 격리**: 사용자별 데이터 완전 분리
+- **확장 가능성**: 다수의 사용자가 동시에 사용 가능한 구조
 
 ---
 
@@ -21,8 +27,9 @@
 ### Phase 2.5: Lighthouse 블로그 최적화 자동화
 
 #### 목표
+- **멀티 테넌트**: 각 고객이 자신의 Blogger API를 입력하여 사용
 - 사용자 블로그를 Lighthouse 100점(또는 근접)으로 최적화
-- 개인별 Blogger API를 사용한 자동 최적화
+- "내 블로그 최적화하기" 버튼으로 원클릭 최적화
 - 최적화 전/후 비교 리포트
 
 #### 기능 요구사항
@@ -41,14 +48,16 @@
    - 캐싱 전략 적용
 
 3. **최적화 실행**
-   - "내 블로그 최적화하기" 버튼
+   - "내 블로그 최적화하기" 버튼 (각 사용자별)
    - 단계별 진행 상황 표시
    - 최적화 전/후 비교 리포트
+   - 사용자별 최적화 히스토리 저장
 
-4. **개인별 API 연동**
-   - 사용자별 Google Blogger API 사용
-   - 블로그별 설정 저장
-   - 최적화 히스토리 관리
+4. **멀티 테넌트 API 관리**
+   - 사용자가 자신의 Google Blogger API 입력 (설정 페이지)
+   - 사용자별 API 키 암호화 저장 (Supabase)
+   - 사용자별 블로그 설정 저장
+   - API 키 유효성 검증
 
 #### 기술 스택
 - **Lighthouse CI**: 자동화된 Lighthouse 측정
@@ -110,12 +119,13 @@
    - 썸네일 스타일 분석
    - 태그 및 설명 분석
 
-2. **음원 생성**
+2. **음원 생성 및 조합**
    - 가사 생성/미생성 옵션
    - 분위기/장르 선택
    - 성별/보컬 스타일 선택
    - 일관된 분위기 유지 알고리즘
-   - 여러 음원 조합 (플레이리스트)
+   - **10-20개 음원 묶음 생성** (30분-1시간 플레이리스트)
+   - 음원 간 자연스러운 전환 처리
 
 3. **썸네일 생성**
    - 성공 사례 썸네일 학습
@@ -123,19 +133,23 @@
    - A/B 테스트용 변형 생성
    - 최적화된 텍스트 오버레이
 
-4. **자동 업로드**
-   - YouTube API 연동
+4. **영상 생성 및 자동 업로드**
+   - **이미지/영상 자동 생성**: 각 음원 구간에 맞는 이미지/영상 생성
+   - **음원과 영상 연동**: 음원 타이밍에 맞춰 이미지/영상 전환
+   - **FFmpeg를 통한 영상 합성**: 음원 + 이미지/영상 = 최종 영상 파일
+   - YouTube API 연동 (사용자별 API)
    - 설명란 자동 생성
    - 각 음원 시작 지점 타임스탬프
    - 수익 안내 고지 자동 추가
    - 태그 최적화
 
 #### 기술 스택
-- **YouTube Data API v3**: 플레이리스트 분석, 업로드
-- **Suno API**: 음원 생성
-- **DALL-E/Midjourney API**: 썸네일 생성
-- **FFmpeg**: 음원 편집 및 조합
-- **Context7 MCP**: 고품질 콘텐츠 생성
+- **YouTube Data API v3**: 플레이리스트 분석, 업로드 (사용자별 API)
+- **Suno API**: 음원 생성 (사용자별 API)
+- **DALL-E/Midjourney API**: 썸네일 및 영상용 이미지 생성 (사용자별 API)
+- **FFmpeg**: 음원 편집, 조합, 영상 합성
+- **Context7 MCP**: 고품질 콘텐츠 생성 (사용자별 API)
+- **Puppeteer/Playwright**: DistroKid 자동화 (브라우저 자동화)
 
 #### 구현 단계
 
@@ -165,14 +179,33 @@
 - optimizeThumbnail(image: Image): Promise<Image>
 ```
 
-**Step 4: 업로드 모듈**
+**Step 4: 영상 생성 모듈**
+```typescript
+// features/music/services/videoGenerator.ts
+- generateImagesForMusics(musics: Music[]): Promise<Image[]>
+- generateVideosForMusics(musics: Music[]): Promise<Video[]>
+- combineAudioAndVisual(audio: AudioFile, visuals: Visual[]): Promise<VideoFile>
+- syncVisualsWithAudio(video: VideoFile, audio: AudioFile): Promise<VideoFile>
+```
+
+**Step 5: 업로드 모듈**
 ```typescript
 // features/youtube/services/uploadService.ts
-- uploadVideo(video: VideoFile, metadata: VideoMetadata): Promise<string>
+- uploadVideo(video: VideoFile, metadata: VideoMetadata, userApiKey: string): Promise<string>
 - generateDescription(playlist: Music[]): string
 - generateTimestamps(musics: Music[]): string
 - addRevenueNotice(description: string): string
 ```
+
+**Step 6: DistroKid 자동화 모듈** (API 없음, 자동화 방법 연구 필요)
+```typescript
+// features/music/services/distrokidService.ts
+- loginToDistroKid(credentials: DistroKidCredentials): Promise<void>
+- uploadMusic(music: MusicFile, metadata: MusicMetadata): Promise<string>
+- checkUploadStatus(trackId: string): Promise<UploadStatus>
+- distributeToPlatforms(trackId: string, platforms: Platform[]): Promise<void>
+```
+**참고**: DistroKid는 API를 제공하지 않으므로 Puppeteer/Playwright를 통한 브라우저 자동화 필요
 
 ---
 
@@ -312,6 +345,15 @@
 ### 이미지 최적화
 - [WebP Guide](https://developers.google.com/speed/webp)
 - [Image Optimization](https://web.dev/fast/#optimize-your-images)
+
+---
+
+---
+
+## 🔗 관련 문서
+
+- `docs/MULTI_TENANT_ARCHITECTURE.md`: 멀티 테넌트 아키텍처 상세 설계
+- `docs/DEVELOPMENT_PLAN.md`: 전체 개발 계획
 
 ---
 
