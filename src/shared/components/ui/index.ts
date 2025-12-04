@@ -11,6 +11,7 @@ export {
   CardContent,
 } from './card'
 export { Label } from './label'
+export { Textarea } from './textarea'
 export {
   useFormField,
   Form,

@@ -1,9 +1,12 @@
 import { Routes as RouterRoutes, Route, Navigate } from 'react-router-dom'
-import { ProtectedRoute } from '@/shared/components/common'
+import { ProtectedRoute, AuthRedirect } from '@/shared/components/common'
 import { LoginForm, SignupForm } from '@/features/auth/components'
-import { SettingsPage } from '@/features/settings/components'
+import { SettingsPage, ApiGuidePage } from '@/features/settings/components'
 import { DashboardLayout } from '@/shared/components/layout/DashboardLayout'
 import { DashboardPage } from '@/features/dashboard/components'
+import { LandingPage } from '@/features/landing'
+import { BloggerPage } from '@/features/blogger'
+import { BloggerOAuthCallback, KeywordAnalyzer, MorphemeAnalyzer, KeywordRecommendationDashboard, BlogReconstructionPage } from '@/features/blogger/components'
 
 // 임시 컴포넌트 (개발 중)
 const TempPage = ({ title }: { title: string }) => (
@@ -16,6 +19,16 @@ const TempPage = ({ title }: { title: string }) => (
 export function Routes() {
   return (
     <RouterRoutes>
+      {/* Landing Page - 인증된 사용자는 자동으로 /dashboard로 리다이렉트 */}
+      <Route
+        path="/"
+        element={
+          <AuthRedirect>
+            <LandingPage />
+          </AuthRedirect>
+        }
+      />
+
       {/* Public Routes */}
       <Route path="/login" element={<LoginForm />} />
       <Route path="/signup" element={<SignupForm />} />
@@ -42,11 +55,69 @@ export function Routes() {
         }
       />
       <Route
+        path="/settings/api-guide/:apiKeyType"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <ApiGuidePage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/blogger"
         element={
           <ProtectedRoute>
             <DashboardLayout>
-              <TempPage title="블로거" />
+              <BloggerPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/blogger/oauth/callback"
+        element={
+          <ProtectedRoute>
+            <BloggerOAuthCallback />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/blogger/keyword-analyzer"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <KeywordAnalyzer />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/blogger/morpheme-analyzer"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <MorphemeAnalyzer />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/blogger/keyword-recommendations"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <KeywordRecommendationDashboard />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/blogger/reconstruct"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <BlogReconstructionPage />
             </DashboardLayout>
           </ProtectedRoute>
         }
@@ -72,9 +143,8 @@ export function Routes() {
         }
       />
 
-      {/* Default Route */}
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      {/* 404 Route */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </RouterRoutes>
   )
 }

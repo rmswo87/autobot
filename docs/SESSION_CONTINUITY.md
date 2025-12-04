@@ -1,75 +1,231 @@
 # 세션 연속성 문서
 
-## 📋 문서 개요
-
-이 문서는 새로운 세션에서 프로젝트를 이어서 진행할 수 있도록 현재 상태와 다음 단계를 상세히 기록한 문서입니다.
-
-**작성일**: 2024-12-02  
+**작성일**: 2024-12-03  
+**최종 업데이트**: 2024-12-03 (저녁 세션 - Phase 2.7 상세 계획, 품질 보장 전략, 비용 최소화 전략 수립)  
 **프로젝트**: Autobot  
-**현재 Phase**: Phase 1 준비 완료
+**현재 Phase**: Phase 1 완료, Phase 2 진행 중 (OAuth 인증 완료, 포스트 작성/수정 UI 완료)  
+**DEVELOPMENT_PLAN.md 버전**: 3.4.0  
+**목적**: 새 채팅에서 프로젝트를 이어서 진행하기 위한 종합 가이드
 
 ---
 
-## ✅ 완료된 작업 요약
+## 🚨 중요: 새 세션 시작 시 필수 확인
 
-### 1. 프로젝트 구조 설정 ✅
-- [x] 경로 별칭 설정 완료 (`tsconfig.json`, `vite.config.ts`)
-- [x] 프로젝트 디렉토리 구조 생성 완료
-- [x] App Layer 생성 완료 (`src/app/`)
-- [x] Shared Module 생성 완료 (`src/shared/`)
-- [x] Features Module 구조 생성 완료 (`src/features/`)
+1. **이 문서를 먼저 읽으세요!** ⭐
+2. **개발 계획서**: `DEVELOPMENT_PLAN.md` (버전 3.4.0) - **마스터 문서** ⭐
+   - ⚠️ **모든 체크리스트와 Phase 진행 상황은 `DEVELOPMENT_PLAN.md`에서만 관리됩니다**
+   - 이 문서는 `DEVELOPMENT_PLAN.md`의 현재 상태 요약입니다
+3. **멀티 테넌트 구조**: 각 고객이 개인의 API를 사용하는 배포용 SaaS입니다.
+4. **의존성 규칙**: Features → Shared → External Libraries (순환 의존성 금지)
 
-### 2. 패키지 설치 ✅
-- [x] `react-router-dom` 설치 완료
-- [x] `@tanstack/react-query` 설치 완료
-- [x] `axios` 설치 완료
-- [x] 기존 패키지 (react, typescript, vite, tailwindcss 등)
-
-### 3. 문서 정리 ✅
-- [x] 불필요 문서 삭제 완료
-- [x] 핵심 문서 정리 완료
-- [x] `SETUP_GUIDE.md` 업데이트 완료
-
-### 4. 외부 서비스 설정 ✅
-- [x] Supabase 프로젝트 생성 완료
-- [x] Supabase SQL 스키마 설정 완료
-- [x] Google Cloud Platform 설정 완료
-  - Blogger API v3 활성화 완료
-  - YouTube Data API v3 활성화 완료
+> **📌 문서 업데이트 원칙**: 작업 완료 시 `DEVELOPMENT_PLAN.md`의 체크리스트를 먼저 업데이트하고, 필요 시 이 문서도 업데이트하세요.
 
 ---
 
-## 🔑 제공된 API 키 정보
+## 📋 프로젝트 개요
 
-### Supabase 프로젝트
-- **프로젝트 URL**: https://supabase.com/dashboard/project/zlxewiendvczathlaueu
-- **프로젝트 ID**: `zlxewiendvczathlaueu`
-- **상태**: 프로젝트 생성 완료, SQL 스키마 설정 완료
+### 핵심 목표
+**고품질 자동화 플랫폼** - 단순 양산이 아닌 최적화된 콘텐츠 자동 생성
 
-**환경 변수에 추가 필요:**
-```env
-VITE_SUPABASE_URL=https://zlxewiendvczathlaueu.supabase.co
-VITE_SUPABASE_ANON_KEY=(Supabase 대시보드에서 확인 필요)
-```
+### 주요 기능
+1. **Lighthouse 블로그 최적화**: 사용자별 Blogger API로 블로그 자동 최적화
+2. **유튜브 음원 플레이리스트 자동화**: 10-20개 음원 묶음, 이미지/영상 생성, 자동 업로드
+3. **유튜브 쇼츠 자동화**: 고품질 쇼츠 자동 생성
+4. **성과 분석 대시보드**: 조회수, 성과 지표, 그래프, 월별/연도별 비교
 
-### Google API
-- **API 키**: `AIzaSyD1x3i3rJ_9SUMsTvFkaHhz5Q2Xsr83XgY`
-- **활성화된 API**:
-  - Blogger API v3 ✅
-  - YouTube Data API v3 ✅
-- **용도**: Blogger 및 YouTube API 호출
-- **참고**: 사용자가 설정 페이지에서 본인의 API 키로 변경 가능
+### 아키텍처 원칙
+- **멀티 테넌트**: 각 사용자가 자신의 API 키를 입력하여 사용
+- **고품질**: AI 저품질 콘텐츠가 아닌 최적화된 콘텐츠
+- **학습 기반**: 성공 사례 분석 및 패턴 학습
+- **자동화**: 반복 작업 자동화하되 품질은 유지
+- **Feature-based 구조**: 기능별 모듈 분리 (`features/auth`, `features/blogger` 등)
+- **의존성 규칙**: Features → Shared → External Libraries (하위 → 상위만 허용)
+- **모듈화**: 각 모듈은 독립적으로 테스트 가능해야 함
 
-### Context7 MCP API
-- **API 키**: `ctx7sk-c8adb493-a100-435a-a15a-d48faab836e0`
-- **용도**: 고품질 콘텐츠 생성
-- **참고**: 사용자가 설정 페이지에서 본인의 API 키로 변경 가능
+---
 
-### Suno API
-- **기본 API 키**: `aebfcc2909ac4b4f890f5edc38f266f2`
-- **API 엔드포인트**: https://musicapi.ai
-- **용도**: 음원 생성
-- **참고**: 사용자가 설정 페이지에서 본인의 API 키로 변경 가능
+## ✅ 완료된 작업
+
+### Phase 1: 기본 인증 및 설정 ✅ 완료
+
+#### 1. 인증 시스템 ✅
+- 이메일/비밀번호 로그인/회원가입
+- OAuth 로그인 (Google, GitHub, Kakao)
+- 인증 상태 관리 (Context API)
+- Protected Routes
+- 이메일 인증 안내
+- 로그인 성공 알림 (1.5초)
+- 세션 기반 인증 (무한 로딩 문제 해결)
+
+#### 2. 설정 모듈 ✅
+- API 키 관리 페이지
+- Supabase 연동
+- 폼 검증 (react-hook-form + zod)
+
+#### 3. 대시보드 레이아웃 ✅
+- 헤더 및 네비게이션
+- 사이드바 메뉴
+- 기본 대시보드 페이지
+- 통계 카드
+- 빠른 시작 섹션
+
+#### 4. 인프라 ✅
+- Vercel 배포 완료
+- 환경 변수 설정
+- Supabase OAuth 설정
+- GitHub 레포지토리 연동 (rmswo87/autobot)
+- 빌드 에러 수정 완료
+
+### Phase 1.4.5: 랜딩페이지 구현 ✅ 완료 (2024-12-03)
+
+**작업 내용**:
+- 랜딩페이지 컴포넌트 생성 (`features/landing/components/LandingPage.tsx`)
+- 메인 페이지(`/`)를 랜딩페이지로 설정
+- `AuthRedirect` 컴포넌트 생성: 인증된 사용자는 자동으로 `/dashboard`로 리다이렉트
+- 현대적이고 매력적인 UI 디자인 (그라데이션 배경, 반응형 레이아웃)
+- 주요 기능 소개 섹션 (블로그 최적화, 음원 플레이리스트, 성과 분석)
+- CTA 버튼 (로그인/회원가입)
+- 네비게이션 바 및 푸터
+
+**결과**: 사용자가 처음 접속하면 매력적인 랜딩페이지를 보고, 로그인 후 자동으로 대시보드로 이동합니다.
+
+### Phase 1.5: 대시보드 데이터 연동 ✅ 완료 (2024-12-03)
+
+**작업 내용**:
+- 대시보드 타입 정의 (`dashboard.types.ts`)
+- 대시보드 서비스 생성 (`dashboardService.ts`)
+  - `getDashboardStats()`: 블로그 게시물, 음원, 유튜브 영상 수 및 이번 달 활동 집계
+  - `getRecentActivities()`: 최근 활동 목록 조회 및 시간순 정렬
+- 대시보드 훅 생성 (`useDashboard.ts`)
+  - `useDashboardStats()`: 통계 데이터 조회 훅
+  - `useRecentActivities()`: 최근 활동 목록 조회 훅
+- 대시보드 페이지에 실제 Supabase 데이터 연동
+- 로딩 상태 표시
+- 숫자 포맷팅 (천 단위 구분)
+- 최근 활동 목록: 타입별 아이콘, 시간순 정렬, 상대 시간 표시 (date-fns 사용)
+- `date-fns` 패키지 설치
+
+**결과**: 대시보드에 실제 데이터가 표시되며, 최근 활동 목록이 실시간으로 업데이트됩니다.
+
+### Phase 1.7: API 키 발급 가이드 구현 ✅ 완료 (2024-12-03)
+
+**작업 내용**:
+- API 가이드 타입 및 데이터 정의 (`api-guide.types.ts`, `apiGuides.ts`)
+- 각 API 키별 발급 가이드 데이터:
+  - Google API Key
+  - Google Client ID/Secret
+  - Suno API Key
+  - Context7 API Key (고품질 콘텐츠 생성 설명 포함)
+  - OpenAI API Key
+- API 가이드 페이지 컴포넌트 생성 (`ApiGuidePage.tsx`)
+  - 단계별 발급 방법 안내
+  - 외부 링크 버튼 (회원가입, API 키 발급 페이지, 공식 문서)
+  - 중요 안내 섹션
+- 설정 페이지에 각 API 키 옆에 물음표(?) 버튼 추가
+- 클릭 시 해당 API 키 발급 가이드 페이지로 이동
+- 라우팅 추가 (`/settings/api-guide/:apiKeyType`)
+
+**Context7 MCP 필요성 설명**:
+- 고품질 콘텐츠 생성을 위해 필요
+- 블로그 콘텐츠 최적화 (SEO, 메타 태그, 고품질 본문)
+- 유튜브 콘텐츠 최적화 (제목/설명, 태그, 스크립트)
+- 자료 수집 및 분석 (성공 사례 분석, 패턴 학습, 트렌드 파악)
+
+**결과**: 처음 사용하는 사용자도 쉽게 API 키를 발급받을 수 있도록 가이드가 제공됩니다.
+
+### Phase 2: 블로거 모듈 기본 구조 ✅ 완료 (2024-12-03 오후)
+
+**작업 내용**:
+- 블로거 타입 정의 (`blogger.types.ts`) ✅
+  - `BloggerBlog`, `BloggerPost`, `CreatePostRequest`, `UpdatePostRequest` 타입 정의
+  - Google Blogger API v3 응답 타입 정의
+- 블로거 서비스 레이어 생성 (`bloggerService.ts`) ✅
+  - Google Blogger API v3 연동 (사용자별 API 키 사용)
+  - OAuth 토큰 우선 사용 로직 구현
+  - 구현된 기능:
+    - `getBlogs()`: 사용자 블로그 목록 조회 (OAuth 토큰 사용) ✅
+    - `getBlog()`: 특정 블로그 정보 조회 ✅
+    - `getPosts()`: 블로그 포스트 목록 조회 ✅
+    - `getPost()`: 특정 포스트 조회 ✅
+    - `createPost()`, `updatePost()`: OAuth 토큰 사용 가능 (UI 구현 필요)
+- Google OAuth 2.0 인증 구현 ✅
+  - `bloggerOAuthService.ts` 생성
+  - OAuth 인증 URL 생성
+  - Authorization Code를 Access Token으로 교환
+  - Refresh Token으로 Access Token 갱신
+  - OAuth 토큰 저장/조회/삭제 (Supabase `blogger_accounts` 테이블)
+- 블로거 훅 생성 (`useBlogger.ts`) ✅
+  - `useBlogs()`, `useBlog()`, `usePosts()`, `usePost()` 조회 훅
+  - `useCreatePost()`, `useUpdatePost()` 뮤테이션 훅
+- 블로거 페이지 컴포넌트 개선 (`BloggerPage.tsx`) ✅
+  - 블로그 목록 카드 표시
+  - 블로그 선택 시 포스트 목록 표시
+  - OAuth 토큰 상태 표시
+  - "Google 계정 연결" 버튼 추가
+  - 연동 해제 기능
+  - 에러 처리 및 사용자 친화적 메시지
+- OAuth 콜백 처리 (`BloggerOAuthCallback.tsx`) ✅
+  - `/blogger/oauth/callback` 라우트 추가
+  - State 검증 (CSRF 방지)
+  - 토큰 저장 후 자동 리다이렉트
+- API 키 관리 개선 ✅
+  - API 키 유효성 검증 로직 개선
+  - Google API Key 실제 검증 (API 호출)
+  - 설정 페이지에 보이기/숨기기 토글 추가 (모든 API 키 필드)
+  - 저장 시 자동 검증
+- 대시보드 개선 ✅
+  - API 키 상태 표시 섹션 추가
+  - 빠른 시작 버튼에 API 키 필요 여부 표시
+- API 가이드 개선 ✅
+  - Client ID/Secret 가이드에 리디렉션 URI 설정 방법 상세히 추가
+  - `importantNotes` 필드 추가 및 UI 표시
+  - 사용자 친화적인 단계별 안내
+
+**현재 상태**:
+- ✅ 블로그 목록 조회: OAuth 토큰으로 정상 작동
+- ✅ 포스트 목록 조회: 정상 작동
+- ✅ OAuth 2.0 인증: 완전 구현 및 테스트 완료
+- ⏳ 포스트 생성/수정 UI: 구현 필요 (OAuth 토큰은 준비됨)
+
+**다음 단계**: 포스트 작성/수정 UI 구현 ✅ 완료
+
+### Phase 2.6: 키워드 분석기 및 형태소 분석기 ✅ 완료 (2024-12-03 오후)
+
+**작업 내용**:
+- 키워드 분석기 UI 컴포넌트 생성 (`KeywordAnalyzer.tsx`) ✅
+  - 문서 수집 및 키워드 추출
+  - 키워드 빈도 분석 및 시각화 (Bar Chart, Pie Chart)
+  - 도메인별 인기 키워드 패턴 매칭
+  - 상위 키워드 선택 기능
+  - 필터링 옵션 (최소 빈도, 최소 문서 수)
+- 형태소 분석기 UI 컴포넌트 생성 (`MorphemeAnalyzer.tsx`) ✅
+  - 텍스트 형태소 추출 및 빈도 분석
+  - 반복 패턴 감지
+  - 의미 없는 형태소 자동 감지 및 제거
+  - 형태소 빈도 시각화 (Bar Chart)
+  - 제거된 형태소 목록 표시
+- 키워드 분석 서비스 (`keywordAnalysisService.ts`) ✅
+  - 키워드 추출 로직
+  - 문서별 키워드 집계
+  - 도메인별 인기 키워드 패턴 정의
+  - 키워드 기반 제목 생성
+- 라우팅 추가 ✅
+  - `/blogger/keyword-analyzer`: 키워드 분석기 페이지
+  - `/blogger/morpheme-analyzer`: 형태소 분석기 페이지
+- BloggerPage 통합 ✅
+  - 분석기 접근 버튼 추가
+- recharts 라이브러리 추가 ✅
+  - 차트 시각화를 위한 라이브러리 설치
+
+**결과**: 사용자가 키워드와 형태소를 직관적으로 분석하고 관리할 수 있는 도구가 제공됩니다.
+
+**⚠️ 중요 개선 필요 사항** (2024-12-03 저녁 세션 요청):
+- 현재 키워드 분석기는 수동 문서 입력 방식
+- **Google Search MCP Server 연동 필요**: 최근 인기 검색어 자동 수집
+- **키워드 점수 시스템 필요**: 대형/소형 키워드 구분, 경쟁율 분석
+- **자동 키워드 추천 시스템**: 매일 특정 시간에 자동 검색 및 추천
+- **형태소 분석기 개선**: 찾은 키워드로 새로운 블로그 글 자동 재구성
+- **백링크 자동화**: 링크드인, 미디엄, 페이스북, 인스타그램, 스레드, 레딧 등 자동 배포
 
 ---
 
@@ -77,721 +233,1819 @@ VITE_SUPABASE_ANON_KEY=(Supabase 대시보드에서 확인 필요)
 
 ```
 Autobot/
-├── docs/
-│   ├── SESSION_CONTINUITY.md    # 이 문서 ⭐
-│   ├── DEVELOPMENT_PLAN.md      # 개발 계획서
-│   ├── ARCHITECTURE.md          # 아키텍처 설계
-│   ├── MODULE_DEPENDENCIES.md   # 모듈 의존성 맵
-│   ├── PROJECT_STRUCTURE.md     # 프로젝트 구조
-│   ├── SETUP_GUIDE.md           # 설정 가이드
-│   └── SETUP_CHECKLIST.md       # 체크리스트
+├── docs/                          # 📚 문서 관리
+│   ├── SESSION_CONTINUITY.md      # 이 문서 ⭐
+│   ├── DEVELOPMENT_PLAN.md        # 개발 계획서 (통합 필요)
+│   ├── QUALITY_AUTOMATION_PLAN.md # 고품질 자동화 계획
+│   ├── MULTI_TENANT_ARCHITECTURE.md # 멀티 테넌트 설계
+│   ├── FFMPEG_IMPLEMENTATION_PLAN.md # FFmpeg 구현 계획
+│   ├── ffmpeg.md                  # n8n 기반 영상 생성 참고
+│   ├── CURRENT_STATUS.md          # 현재 상태
+│   ├── API_KEYS.md                # API 키 관리 (민감 정보)
+│   └── ... (기타 문서들)
 │
 ├── src/
-│   ├── app/                     # ✅ 완료
+│   ├── app/                       # ✅ 완료
 │   │   ├── App.tsx
 │   │   ├── routes.tsx
 │   │   ├── providers.tsx
 │   │   └── index.ts
 │   │
-│   ├── shared/                  # ✅ 완료
+│   ├── shared/                    # ✅ 완료
 │   │   ├── components/
+│   │   │   ├── ui/                # Shadcn/ui 컴포넌트
+│   │   │   ├── layout/            # DashboardLayout, Header
+│   │   │   └── common/            # ProtectedRoute, LoadingSpinner
 │   │   ├── services/
-│   │   ├── types/
-│   │   └── constants/
+│   │   │   └── supabase/          # Supabase 클라이언트
+│   │   └── types/
 │   │
-│   └── features/                # ⏳ 구조만 생성됨
-│       ├── auth/                # TODO: Phase 1에서 구현
-│       ├── settings/            # TODO: Phase 1에서 구현
-│       ├── blogger/             # TODO: Phase 2에서 구현
-│       ├── music/               # TODO: Phase 3에서 구현
-│       └── youtube/             # TODO: Phase 4에서 구현
+│   └── features/                  # ⏳ 부분 완료
+│       ├── auth/                  # ✅ 완료
+│       │   ├── components/        # LoginForm, SignupForm
+│       │   ├── hooks/             # useAuth
+│       │   ├── services/          # authService
+│       │   ├── contexts/          # AuthContext
+│       │   └── types/
+│       │
+│       ├── settings/              # ✅ 완료
+│       │   ├── components/        # SettingsPage
+│       │   ├── services/          # apiKeyService
+│       │   └── types/
+│       │
+│       ├── dashboard/             # ✅ 완료
+│       │   ├── components/        # DashboardPage (데이터 연동 완료)
+│       │   ├── hooks/             # useDashboardStats, useRecentActivities
+│       │   ├── services/          # dashboardService
+│       │   └── types/             # dashboard.types
+│       │
+│       ├── landing/               # ✅ 완료
+│       │   └── components/        # LandingPage
+│       │
+│       ├── blogger/               # ⏳ 진행 중
+│       │   ├── components/        # BloggerPage (블로그 목록, 포스트 목록 조회)
+│       │   ├── hooks/             # useBlogger (조회 훅 완료, 뮤테이션 훅은 OAuth 필요)
+│       │   ├── services/          # bloggerService (조회 기능 완료)
+│       │   └── types/             # blogger.types
+│       │
+│       ├── music/                 # ❌ 미구현
+│       └── youtube/               # ❌ 미구현
 │
-├── package.json                 # ✅ 패키지 설치 완료
-├── tsconfig.json                # ✅ 경로 별칭 설정 완료
-└── vite.config.ts               # ✅ 경로 별칭 설정 완료
+├── package.json                   # ✅ 설정 완료
+├── tsconfig.json                  # ✅ 경로 별칭 설정
+├── vite.config.ts                 # ✅ 설정 완료
+├── vercel.json                    # ✅ 배포 설정
+└── .env.local                     # ⚠️ Git에 커밋되지 않음
 ```
 
 ---
 
-## 🎯 다음 단계 작업 (Phase 1)
+## 🎯 사용자 요청사항 요약
 
-### Step 1: 환경 변수 설정 (우선순위: 높음)
+### 1. 개발 계획서 통합 ✅ 완료
+- **문제**: 여러 개발 계획 문서가 있어 헷갈렸습니다.
+- **해결**: ✅ `DEVELOPMENT_PLAN.md` (버전 3.0.0)로 통합 완료
+- **통합된 문서**:
+  - ✅ `QUALITY_AUTOMATION_PLAN.md` - Phase 2.5, 3, 4 통합
+  - ✅ `FFMPEG_IMPLEMENTATION_PLAN.md` - Phase 3에 통합
+  - ✅ `MULTI_TENANT_ARCHITECTURE.md` - 아키텍처 원칙에 통합
+  - `ffmpeg.md` - 참고 문서로 유지
 
-#### 1.1 `.env.local` 파일 생성
+### 2. 멀티 테넌트 구조
+- **핵심**: 각 고객이 개인의 API를 입력하여 사용
+- **구현 필요**:
+  - 사용자별 API 키 관리 (암호화 저장)
+  - 서비스 레이어에서 사용자 API 키 주입
+  - 데이터 격리 (RLS)
 
-프로젝트 루트에 `.env.local` 파일 생성:
+### 3. Lighthouse 블로그 최적화
+- **기능**: "내 블로그 최적화하기" 버튼
+- **동작**: 사용자별 Blogger API 사용 → Lighthouse 100점 달성
+- **출력**: 최적화 전/후 비교 리포트
 
-```env
-# Supabase 설정
-VITE_SUPABASE_URL=https://zlxewiendvczathlaueu.supabase.co
-VITE_SUPABASE_ANON_KEY=(Supabase 대시보드 > Settings > API에서 확인)
+### 4. 음원 플레이리스트 자동화 (확장)
+- **음원 묶음**: 10-20개 음원을 30분-1시간 플레이리스트로
+- **이미지/영상 생성**: 각 음원 구간에 맞는 비주얼 자동 생성
+- **FFmpeg 합성**: 음원 + 이미지/영상 → 최종 영상
+- **자동 업로드**: YouTube API로 자동 업로드
+- **DistroKid 자동화**: Puppeteer/Playwright로 브라우저 자동화
 
-# API 엔드포인트 (백엔드가 준비되면 업데이트)
-VITE_API_URL=http://localhost:3000/api
-```
+### 5. 성과 분석 대시보드 (신규 요청)
+- **조회수 분석**: 그래프 및 지표
+- **성과 비교**: 지난달 대비 이번달, 연도별 섹션
+- **직관적인 시각화**: 차트, 그래프, 트렌드 분석
+- **자동 업로드 통계**: 업로드된 콘텐츠 수, 성과 등
 
-**Supabase Anon Key 확인 방법:**
-1. https://supabase.com/dashboard/project/zlxewiendvczathlaueu 접속
-2. Settings > API 메뉴 클릭
-3. "Project API keys" 섹션에서 `anon` `public` 키 복사
+### 6. Phase 2.7: 키워드/형태소 분석기 고도화 및 백링크 자동화 (2024-12-03 저녁 세션 요청) ⚠️ 최우선
 
-#### 1.2 환경 변수 확인
+**핵심 목표**: 완전 자동화된 블로그 콘텐츠 생성 및 배포 시스템 구축
 
-```bash
-# 개발 서버 실행하여 환경 변수 로드 확인
-npm run dev
-```
+#### 6.1 키워드 분석기 고도화
+
+**현재 상태**: 수동 문서 입력 방식 (개선 필요)
+
+**목표 상태**: Google Search MCP로 자동 키워드 수집 및 추천
+
+**주요 기능**:
+- **Google Search MCP Server 연동**: [GitHub Repository](https://github.com/mixelpixx/Google-Search-MCP-Server)
+  - 최근 인기 검색어 자동 수집
+  - 매일 특정 시간에 자동 키워드 검색 및 추천
+  - 사용자가 키워드를 찾아서 보고하는 것이 아니라, 시스템이 자동으로 찾아서 추천
+- **키워드 점수 시스템**:
+  - 대형 키워드 vs 소형 키워드 구분 (검색량 기준)
+  - 경쟁율 분석 (내 블로그 글이 상위 노출 가능한지 판단)
+  - 최적의 키워드 자동 추천 (점수 기반)
+  - 롱테일 키워드 우선 추천
+- **자동 추천 시스템**:
+  - 매일 수집된 키워드 중 최적 키워드 자동 추천
+  - 도메인별 맞춤 추천
+  - 트렌드 반영 (최근 검색량 증가 추세)
+
+#### 6.2 형태소 분석기 고도화
+
+**현재 상태**: 기본 형태소 분석 기능만 있음 (개선 필요)
+
+**목표 상태**: 키워드 기반 자동 블로그 글 재구성
+
+**주요 기능**:
+- **자동 블로그 글 재구성**:
+  - 찾은 핵심 키워드들을 활용
+  - 블로그 글, 제목, 본문 내용 참고
+  - 형태소 단위로 분석하여 새로운 블로그 글로 재구성
+  - 최적화된 나만의 블로그 글 자동 생성
+- **SEO 최적화 자동 적용**:
+  - SEO 최적화된 제목 생성 (키워드 포함, 30-60자)
+  - H2 태그 최적화 (첫 번째 H2에 주요 키워드 포함)
+  - 키워드가 자연스럽게 포함된 본문
+  - 메타 설명 자동 생성
+  - 이미지 자동 삽입 및 Alt 텍스트 생성
+
+#### 6.3 백링크 자동화
+
+**현재 상태**: 미구현
+
+**목표 상태**: 6개 플랫폼 자동 배포
+
+**자동 배포 플랫폼** (6개):
+- 링크드인 (LinkedIn) - API 또는 브라우저 자동화
+- 미디엄 (Medium) - API 또는 브라우저 자동화
+- 페이스북 (Facebook) - API 또는 브라우저 자동화
+- 인스타그램 (Instagram) - API 또는 브라우저 자동화
+- 스레드 (Threads) - API 또는 브라우저 자동화
+- 레딧 (Reddit) - API 또는 브라우저 자동화
+
+**주요 기능**:
+- 블로그 글 발행 후 자동으로 여러 플랫폼에 배포
+- 각 플랫폼에 맞는 형식으로 자동 변환
+- 백링크 자동 삽입
+- 배포 상태 추적 및 관리
+
+**상세 내용**: 위의 "Phase 2.7" 섹션 참조
 
 ---
 
-### Step 2: Supabase 클라이언트 설정 (우선순위: 높음)
+## 📊 현재 개발 계획 문서 현황
 
-#### 2.1 Supabase 패키지 설치
+### 통합 완료 ✅
+**DEVELOPMENT_PLAN.md** (버전 3.0.0) - **통합 마스터 문서** ⭐
+- ✅ 전체 개발 계획 통합
+- ✅ Phase별 체크리스트 (Phase 1 ~ Phase 4)
+- ✅ 아키텍처 원칙 (멀티 테넌트 포함)
+- ✅ 멀티 테넌트 데이터 모델
+- ✅ 우선순위 요약
+- ✅ 기술 스택 정리
 
-```bash
-npm install @supabase/supabase-js
-```
-
-#### 2.2 Supabase 클라이언트 생성
-
-**파일 생성**: `src/shared/services/supabase/client.ts`
-
-```typescript
-import { createClient } from '@supabase/supabase-js'
-
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables')
-}
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
-```
-
-**파일 생성**: `src/shared/services/supabase/index.ts`
-
-```typescript
-export { supabase } from './client'
-```
-
-**업데이트**: `src/shared/services/index.ts`
-
-```typescript
-export * from './api'
-export * from './storage'
-export * from './supabase'  // 추가
-```
+### 참고 문서 (유지)
+- **ffmpeg.md**: n8n 기반 영상 생성 자동화 참고 문서
+- **QUALITY_AUTOMATION_PLAN.md**: 통합 완료 (참고용으로 유지 가능)
+- **FFMPEG_IMPLEMENTATION_PLAN.md**: 통합 완료 (참고용으로 유지 가능)
+- **MULTI_TENANT_ARCHITECTURE.md**: 통합 완료 (참고용으로 유지 가능)
 
 ---
 
-### Step 3: 인증 모듈 구현 (우선순위: 높음)
+## 🔑 API 키 정보
 
-#### 3.1 인증 타입 정의
+### Supabase
+- **URL**: `https://zlxewiendvczathlaueu.supabase.co`
+- **Anon Key**: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` (전체는 `docs/API_KEYS.md` 참조)
+- **상태**: 프로젝트 생성 완료, OAuth 설정 완료
 
-**파일 생성**: `src/features/auth/types/auth.types.ts`
+### Google OAuth
+- **Client ID**: 환경 변수 또는 설정에서 확인 (실제 값은 보안상 문서에 포함하지 않음)
+- **Client Secret**: 환경 변수 또는 설정에서 확인 (실제 값은 보안상 문서에 포함하지 않음)
 
-```typescript
-export interface User {
-  id: string
-  email: string
-  name?: string
-  created_at: string
-  updated_at: string
-}
+### GitHub OAuth
+- **Client ID**: 환경 변수 또는 설정에서 확인 (실제 값은 보안상 문서에 포함하지 않음)
+- **Client Secret**: 환경 변수 또는 설정에서 확인 (실제 값은 보안상 문서에 포함하지 않음)
 
-export interface LoginCredentials {
-  email: string
-  password: string
-}
+### Kakao OAuth
+- **REST API Key**: `0ca11a270a35594db7f0259d7b872337`
+- **Client Secret**: 환경 변수 또는 설정에서 확인 (실제 값은 보안상 문서에 포함하지 않음)
 
-export interface SignupCredentials {
-  email: string
-  password: string
-  name?: string
-}
-
-export interface AuthState {
-  user: User | null
-  isLoading: boolean
-  isAuthenticated: boolean
-}
-```
-
-**파일 생성**: `src/features/auth/types/index.ts`
-
-```typescript
-export * from './auth.types'
-```
-
-#### 3.2 인증 서비스 구현
-
-**파일 생성**: `src/features/auth/services/authService.ts`
-
-```typescript
-import { supabase } from '@/shared/services/supabase'
-import type { LoginCredentials, SignupCredentials, User } from '../types'
-
-export const authService = {
-  async login(credentials: LoginCredentials) {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: credentials.email,
-      password: credentials.password,
-    })
-
-    if (error) throw error
-    return data
-  },
-
-  async signup(credentials: SignupCredentials) {
-    const { data, error } = await supabase.auth.signUp({
-      email: credentials.email,
-      password: credentials.password,
-      options: {
-        data: {
-          name: credentials.name,
-        },
-      },
-    })
-
-    if (error) throw error
-    return data
-  },
-
-  async logout() {
-    const { error } = await supabase.auth.signOut()
-    if (error) throw error
-  },
-
-  async getCurrentUser(): Promise<User | null> {
-    const { data: { user }, error } = await supabase.auth.getUser()
-    if (error) throw error
-    return user as User | null
-  },
-
-  async getSession() {
-    const { data: { session }, error } = await supabase.auth.getSession()
-    if (error) throw error
-    return session
-  },
-}
-```
-
-**파일 생성**: `src/features/auth/services/index.ts`
-
-```typescript
-export { authService } from './authService'
-```
-
-#### 3.3 인증 훅 구현
-
-**파일 생성**: `src/features/auth/hooks/useAuth.ts`
-
-```typescript
-import { useState, useEffect } from 'react'
-import { authService } from '../services'
-import type { User } from '../types'
-
-export function useAuth() {
-  const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-
-  useEffect(() => {
-    // 초기 사용자 로드
-    loadUser()
-
-    // 인증 상태 변경 감지
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (session) {
-          const currentUser = await authService.getCurrentUser()
-          setUser(currentUser)
-          setIsAuthenticated(true)
-        } else {
-          setUser(null)
-          setIsAuthenticated(false)
-        }
-        setIsLoading(false)
-      }
-    )
-
-    return () => {
-      subscription.unsubscribe()
-    }
-  }, [])
-
-  const loadUser = async () => {
-    try {
-      const currentUser = await authService.getCurrentUser()
-      setUser(currentUser)
-      setIsAuthenticated(!!currentUser)
-    } catch (error) {
-      console.error('Failed to load user:', error)
-      setUser(null)
-      setIsAuthenticated(false)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const login = async (email: string, password: string) => {
-    setIsLoading(true)
-    try {
-      await authService.login({ email, password })
-      await loadUser()
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const signup = async (email: string, password: string, name?: string) => {
-    setIsLoading(true)
-    try {
-      await authService.signup({ email, password, name })
-      await loadUser()
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const logout = async () => {
-    setIsLoading(true)
-    try {
-      await authService.logout()
-      setUser(null)
-      setIsAuthenticated(false)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  return {
-    user,
-    isLoading,
-    isAuthenticated,
-    login,
-    signup,
-    logout,
-  }
-}
-```
-
-**파일 생성**: `src/features/auth/hooks/index.ts`
-
-```typescript
-export { useAuth } from './useAuth'
-```
-
-**주의**: `useAuth.ts`에서 `supabase` import 필요:
-```typescript
-import { supabase } from '@/shared/services/supabase'
-```
-
-#### 3.4 인증 컨텍스트 생성
-
-**파일 생성**: `src/features/auth/contexts/AuthContext.tsx`
-
-```typescript
-import { createContext, useContext, ReactNode } from 'react'
-import { useAuth } from '../hooks/useAuth'
-import type { User } from '../types'
-
-interface AuthContextType {
-  user: User | null
-  isLoading: boolean
-  isAuthenticated: boolean
-  login: (email: string, password: string) => Promise<void>
-  signup: (email: string, password: string, name?: string) => Promise<void>
-  logout: () => Promise<void>
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
-
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const auth = useAuth()
-
-  return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>
-}
-
-export function useAuthContext() {
-  const context = useContext(AuthContext)
-  if (context === undefined) {
-    throw new Error('useAuthContext must be used within AuthProvider')
-  }
-  return context
-}
-```
-
-**파일 생성**: `src/features/auth/contexts/index.ts`
-
-```typescript
-export { AuthProvider, useAuthContext } from './AuthContext'
-```
-
-#### 3.5 로그인/회원가입 컴포넌트 구현
-
-**필요한 UI 컴포넌트 설치:**
-
-```bash
-npx shadcn@latest add input card form label
-```
-
-**파일 생성**: `src/features/auth/components/LoginForm.tsx`
-
-```typescript
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useAuthContext } from '../contexts'
-import { Button } from '@/shared/components/ui'
-import { Input } from '@/shared/components/ui/input'
-import { Card } from '@/shared/components/ui/card'
-
-export function LoginForm() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  
-  const { login } = useAuthContext()
-  const navigate = useNavigate()
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError(null)
-    setIsLoading(true)
-
-    try {
-      await login(email, password)
-      navigate('/dashboard')
-    } catch (err) {
-      setError(err instanceof Error ? err.message : '로그인에 실패했습니다.')
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  return (
-    <Card className="p-6 w-full max-w-md">
-      <h2 className="text-2xl font-bold mb-4">로그인</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="email">이메일</label>
-          <Input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="password">비밀번호</label>
-          <Input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-        <Button type="submit" disabled={isLoading} className="w-full">
-          {isLoading ? '로그인 중...' : '로그인'}
-        </Button>
-      </form>
-    </Card>
-  )
-}
-```
-
-**파일 생성**: `src/features/auth/components/SignupForm.tsx`
-
-(LoginForm과 유사한 구조로 구현)
-
-**파일 생성**: `src/features/auth/components/index.ts`
-
-```typescript
-export { LoginForm } from './LoginForm'
-export { SignupForm } from './SignupForm'
-```
-
-#### 3.6 Protected Route 컴포넌트
-
-**파일 생성**: `src/shared/components/common/ProtectedRoute.tsx`
-
-```typescript
-import { Navigate } from 'react-router-dom'
-import { useAuthContext } from '@/features/auth/contexts'
-import { LoadingSpinner } from './LoadingSpinner'
-
-export function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isLoading } = useAuthContext()
-
-  if (isLoading) {
-    return <LoadingSpinner />
-  }
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />
-  }
-
-  return <>{children}</>
-}
-```
-
-**업데이트**: `src/shared/components/common/index.ts`
-
-```typescript
-export { LoadingSpinner } from './LoadingSpinner'
-export { ErrorBoundary } from './ErrorBoundary'
-export { ProtectedRoute } from './ProtectedRoute'  // 추가
-```
-
-#### 3.7 Auth 모듈 Barrel Export 업데이트
-
-**업데이트**: `src/features/auth/index.ts`
-
-```typescript
-export * from './components'
-export * from './hooks'
-export * from './services'
-export * from './types'
-export * from './contexts'
-```
-
-#### 3.8 App에 AuthProvider 추가
-
-**업데이트**: `src/app/providers.tsx`
-
-```typescript
-import { ReactNode } from 'react'
-import { AuthProvider } from '@/features/auth/contexts'
-
-interface ProvidersProps {
-  children: ReactNode
-}
-
-export function Providers({ children }: ProvidersProps) {
-  return (
-    <AuthProvider>
-      {children}
-    </AuthProvider>
-  )
-}
-```
-
-#### 3.9 라우트 업데이트
-
-**업데이트**: `src/app/routes.tsx`
-
-```typescript
-import { Routes as RouterRoutes, Route, Navigate } from 'react-router-dom'
-import { ProtectedRoute } from '@/shared/components/common'
-import { LoginForm, SignupForm } from '@/features/auth/components'
-
-export function Routes() {
-  return (
-    <RouterRoutes>
-      {/* Public Routes */}
-      <Route path="/login" element={<LoginForm />} />
-      <Route path="/signup" element={<SignupForm />} />
-
-      {/* Protected Routes */}
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <div>대시보드 - 개발 중</div>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/settings"
-        element={
-          <ProtectedRoute>
-            <div>설정 - 개발 중</div>
-          </ProtectedRoute>
-        }
-      />
-      {/* ... 다른 protected routes */}
-      
-      {/* Default Route */}
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
-    </RouterRoutes>
-  )
-}
-```
+**⚠️ 주의**: 모든 API 키는 `docs/API_KEYS.md`에 기록되어 있으며, Git에 커밋되지 않습니다.
 
 ---
 
-### Step 4: 설정 모듈 구현 (우선순위: 높음)
+## 🚨 Phase 2.7: 키워드/형태소 분석기 고도화 및 백링크 자동화 (2024-12-03 저녁 세션 요청)
 
-#### 4.1 설정 타입 정의
+### 우선순위: 최우선 ⚠️
 
-**파일 생성**: `src/features/settings/types/settings.types.ts`
+**목적**: 완전 자동화된 블로그 콘텐츠 생성 및 배포 시스템 구축
 
-```typescript
-export interface UserApiKeys {
-  id?: string
-  user_id?: string
-  google_client_id?: string | null
-  google_client_secret?: string | null
-  google_api_key?: string | null
-  suno_api_key?: string | null
-  context7_api_key?: string | null
-  openai_api_key?: string | null
-  created_at?: string
-  updated_at?: string
-}
-
-export interface ApiKeyFormData {
-  google_client_id: string
-  google_client_secret: string
-  google_api_key: string
-  suno_api_key: string
-  context7_api_key: string
-  openai_api_key?: string
-}
-```
-
-#### 4.2 API 키 서비스 구현
-
-**파일 생성**: `src/features/settings/services/apiKeyService.ts`
-
-```typescript
-import { supabase } from '@/shared/services/supabase'
-import type { UserApiKeys, ApiKeyFormData } from '../types'
-
-export const apiKeyService = {
-  async getApiKeys(): Promise<UserApiKeys | null> {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new Error('User not authenticated')
-
-    const { data, error } = await supabase
-      .from('user_api_keys')
-      .select('*')
-      .eq('user_id', user.id)
-      .single()
-
-    if (error && error.code !== 'PGRST116') throw error
-    return data
-  },
-
-  async saveApiKeys(keys: ApiKeyFormData): Promise<UserApiKeys> {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new Error('User not authenticated')
-
-    const { data, error } = await supabase
-      .from('user_api_keys')
-      .upsert({
-        user_id: user.id,
-        ...keys,
-        updated_at: new Date().toISOString(),
-      })
-      .select()
-      .single()
-
-    if (error) throw error
-    return data
-  },
-
-  async validateApiKey(type: string, key: string): Promise<boolean> {
-    // TODO: 각 API 키 유효성 검증 로직 구현
-    // 현재는 기본 검증만 수행
-    return key.length > 0
-  },
-}
-```
-
-#### 4.3 설정 페이지 컴포넌트 구현
-
-**파일 생성**: `src/features/settings/components/SettingsPage.tsx`
-
-(상세 구현은 다음 단계에서)
+**핵심 가치**: 사용자가 키워드를 찾아서 보고하는 것이 아니라, 시스템이 자동으로 최적 키워드를 찾아서 추천하고, 블로그 글을 자동 생성하여 여러 플랫폼에 배포하는 완전 자동화 시스템
 
 ---
 
-## 📝 작업 체크리스트
+### 1. 키워드 분석기 고도화
 
-### 즉시 진행할 작업
+#### 1.1 Google Search MCP Server 연동
 
-- [ ] **Step 1**: `.env.local` 파일 생성 및 Supabase Anon Key 확인
-- [ ] **Step 2**: Supabase 클라이언트 설정
-  - [ ] `@supabase/supabase-js` 패키지 설치
-  - [ ] `src/shared/services/supabase/client.ts` 생성
-  - [ ] `src/shared/services/supabase/index.ts` 생성
-- [ ] **Step 3**: 인증 모듈 구현
-  - [ ] 타입 정의
-  - [ ] 서비스 구현
-  - [ ] 훅 구현
-  - [ ] 컨텍스트 구현
-  - [ ] 컴포넌트 구현
-  - [ ] Protected Route 구현
-  - [ ] 라우트 업데이트
-- [ ] **Step 4**: 설정 모듈 구현
-  - [ ] 타입 정의
-  - [ ] 서비스 구현
-  - [ ] 컴포넌트 구현
+**참고 리포지토리**: [Google-Search-MCP-Server](https://github.com/mixelpixx/Google-Search-MCP-Server)
 
----
+**목적**: 수동 문서 입력 방식에서 벗어나, Google Search MCP를 통해 최신 인기 검색어를 자동으로 수집
 
-## 🔍 중요 참고사항
+**기능**:
+- 최근 인기 검색어 자동 수집 (트렌드 파악)
+- 매일 특정 시간에 자동 키워드 검색 및 추천
+- 사용자 개입 없이 시스템이 자동으로 최적 키워드 찾기
+- 도메인별 맞춤 키워드 수집 (사용자 블로그 주제 기반)
 
-### 1. Supabase 인증 설정 확인
+**구현 계획**:
+1. **MCP Server 설정**
+   - [ ] Google Search MCP Server 설치 및 설정
+   - [ ] MCP 클라이언트 연동 (Cursor MCP 설정)
+   - [ ] API 키 및 인증 설정
 
-Supabase 대시보드에서 다음 확인:
-- Authentication > Providers > Email 활성화 확인
-- Authentication > URL Configuration 확인
-  - Site URL: `http://localhost:5173`
-  - Redirect URLs: `http://localhost:5173/**`
+2. **자동 키워드 검색 스케줄러**
+   - [ ] 매일 특정 시간 실행 (예: 오전 9시)
+   - [ ] 사용자 설정 가능한 스케줄링 옵션
+   - [ ] Supabase Edge Functions 또는 Vercel Cron Jobs 활용
+   - [ ] 에러 발생 시 재시도 로직
 
-### 2. 환경 변수 보안
+3. **검색 결과 파싱 및 키워드 추출**
+   - [ ] Google Search 결과에서 키워드 추출
+   - [ ] 검색량 데이터 수집
+   - [ ] 관련 키워드 자동 수집
+   - [ ] 롱테일 키워드 자동 발견
 
-- `.env.local` 파일은 절대 Git에 커밋하지 않기
-- `.gitignore`에 `.env.local` 포함 확인
+4. **키워드 저장 및 관리**
+   - [ ] Supabase `keyword_suggestions` 테이블 생성
+   - [ ] 키워드 히스토리 관리
+   - [ ] 중복 키워드 방지
+   - [ ] 키워드 메타데이터 저장 (검색량, 수집일시 등)
 
-### 3. API 키 관리
+#### 1.2 키워드 점수 시스템
 
-- 제공된 API 키는 개발용 기본값
-- 사용자가 설정 페이지에서 본인의 API 키로 변경 가능
-- 프로덕션에서는 사용자별 API 키 사용 필수
+**목적**: 대형 키워드와 소형 키워드를 구분하고, 경쟁율을 분석하여 내 블로그 글이 상위 노출 가능한지 판단
 
----
+**점수 계산 요소**:
 
-## 📚 참고 문서
+1. **검색량 기반 분류**
+   - 대형 키워드: 월 검색량 10,000 이상
+   - 중형 키워드: 월 검색량 1,000 ~ 10,000
+   - 소형 키워드: 월 검색량 1,000 미만
+   - 롱테일 키워드: 3단어 이상 조합
 
-- `docs/DEVELOPMENT_PLAN.md` - 개발 계획서
-- `docs/ARCHITECTURE.md` - 아키텍처 설계
-- `docs/MODULE_DEPENDENCIES.md` - 모듈 의존성 맵
-- `docs/SETUP_GUIDE.md` - 설정 가이드
+2. **경쟁 강도 분석**
+   - 상위 노출된 블로그 글 분석
+     - 도메인 권위도 (DA)
+     - 콘텐츠 길이 및 품질
+     - 백링크 수
+     - 최신성
+   - 경쟁 강도 점수화 (0-100점)
+     - 0-30점: 낮은 경쟁 (상위 노출 가능성 높음)
+     - 31-60점: 중간 경쟁
+     - 61-100점: 높은 경쟁 (상위 노출 어려움)
 
----
+3. **내 블로그 분석**
+   - 현재 블로그 권위도 평가
+   - 기존 포스트 성과 분석
+   - 키워드 적합도 평가
 
-## 🚀 새 세션 시작 시 확인사항
-
-1. **프로젝트 상태 확인**
-   ```bash
-   cd Autobot
-   npm install  # 패키지 확인
-   npm run dev  # 개발 서버 실행 확인
+4. **최적 키워드 점수 계산**
    ```
+   최종 점수 = (검색량 점수 × 0.3) + (경쟁 강도 점수 × 0.4) + (내 블로그 적합도 × 0.3)
+   ```
+   - 높은 점수 = 추천 키워드
+   - 점수 기반 자동 정렬 및 추천
 
-2. **환경 변수 확인**
-   - `.env.local` 파일 존재 확인
-   - Supabase URL 및 Anon Key 확인
+**구현 필요**:
+- [ ] 검색량 데이터 수집 (Google Search Console API 또는 서드파티)
+- [ ] 경쟁 강도 분석 알고리즘
+- [ ] 블로그 권위도 평가 시스템
+- [ ] 점수 계산 로직 구현
+- [ ] 키워드 추천 UI (점수 표시)
 
-3. **문서 확인**
-   - `docs/SESSION_CONTINUITY.md` 읽기 (이 문서)
-   - `docs/SETUP_CHECKLIST.md` 확인
+#### 1.3 자동 키워드 추천 시스템
 
-4. **다음 단계 진행**
-   - 위의 "다음 단계 작업" 섹션 참고
-   - Step 1부터 순차적으로 진행
+**목적**: 매일 수집된 키워드 중에서 최적의 키워드를 자동으로 추천
+
+**추천 로직**:
+1. **롱테일 키워드 우선 추천**
+   - 검색량은 적지만 경쟁이 낮은 키워드
+   - 상위 노출 가능성이 높은 키워드
+
+2. **도메인별 맞춤 추천**
+   - 사용자 블로그 주제 분석
+   - 관련성 높은 키워드 우선 추천
+
+3. **트렌드 반영**
+   - 최근 검색량 증가 추세 키워드
+   - 계절성 키워드 자동 감지
+
+4. **추천 키워드 저장**
+   - Supabase `recommended_keywords` 테이블
+   - 사용자별 추천 키워드 관리
+   - 추천 히스토리 및 피드백 시스템
+
+**UI 구현**:
+- [ ] 추천 키워드 대시보드
+- [ ] 키워드 점수 시각화 (차트)
+- [ ] 키워드 상세 정보 모달
+- [ ] 키워드 선택 및 블로그 글 생성 버튼
 
 ---
 
-**최종 업데이트**: 2024-12-02  
-**다음 세션 시작 시**: 이 문서를 먼저 확인하세요!
+### 2. 형태소 분석기 고도화
+
+#### 2.1 자동 블로그 글 재구성
+
+**목적**: 찾은 핵심 키워드들을 활용하여 새로운 블로그 글을 자동으로 생성
+
+**입력 데이터**:
+- 찾은 핵심 키워드들 (추천 키워드)
+- 참고할 블로그 글 (사용자 제공 또는 자동 수집)
+- 제목 및 본문 내용
+- 도메인별 콘텐츠 패턴
+
+**처리 과정**:
+
+1. **형태소 분석**
+   - 한국어 형태소 분석 서버 연동 (KoNLPy, MeCab 등)
+   - 형태소 단위로 텍스트 분해
+   - 의미 있는 형태소 추출 (명사, 동사, 형용사)
+   - 의미 없는 형태소 제거 (조사, 어미 등)
+
+2. **키워드 기반 문장 재구성**
+   - 핵심 키워드를 자연스럽게 포함하는 문장 생성
+   - 키워드 밀도 최적화 (과도한 키워드 삽입 방지)
+   - 문맥에 맞는 문장 생성 (AI 기반)
+
+3. **블로그 글 구조 최적화**
+   - SEO 최적화된 제목 생성
+     - 주요 키워드 포함
+     - 30-60자 권장 길이
+     - 클릭 유도 문구 포함
+   - H2 태그 최적화
+     - 첫 번째 H2에 주요 키워드 포함
+     - 논리적 구조 (개요 → 본문 → 결론)
+   - 본문 최적화
+     - 키워드가 자연스럽게 포함된 본문
+     - 적절한 문단 길이 (3-5문장)
+     - 가독성 향상
+
+4. **이미지 자동 삽입**
+   - 키워드 기반 이미지 검색
+   - 적절한 위치에 이미지 삽입
+   - Alt 텍스트 자동 생성 (SEO)
+
+**출력 결과**:
+- 최적화된 새로운 블로그 글 (HTML 형식)
+- SEO 최적화된 제목
+- 키워드가 자연스럽게 포함된 본문
+- H2 태그 최적화
+- 이미지 포함
+- 메타 설명 자동 생성
+
+**구현 필요**:
+- [ ] 형태소 분석 서버 연동
+  - 옵션 1: KoNLPy (Python 서버)
+  - 옵션 2: MeCab (C++ 기반, 빠름)
+  - 옵션 3: OpenAI API 활용 (형태소 분석)
+- [ ] 키워드 기반 문장 생성 알고리즘
+  - Context7 MCP 활용 (고품질 콘텐츠 생성)
+  - 프롬프트 엔지니어링
+- [ ] 블로그 글 재구성 로직
+  - 템플릿 기반 구조 생성
+  - AI 기반 콘텐츠 생성
+- [ ] SEO 최적화 자동 적용
+  - 제목 최적화
+  - H2 태그 최적화
+  - 메타 태그 생성
+- [ ] 이미지 자동 삽입 기능
+  - Unsplash API 또는 Pexels API
+  - 키워드 기반 이미지 검색
+  - Alt 텍스트 자동 생성
+
+---
+
+### 3. 백링크 자동화
+
+#### 3.1 자동 배포 플랫폼
+
+**목적**: 블로그 글 발행 후 자동으로 여러 플랫폼에 배포하여 백링크 확보 및 트래픽 증가
+
+**지원 플랫폼** (6개):
+
+1. **링크드인 (LinkedIn)**
+   - API: LinkedIn API v2
+   - 기능: 게시물 자동 업로드
+   - 백링크: 프로필 또는 게시물에 블로그 링크 삽입
+
+2. **미디엄 (Medium)**
+   - API: Medium API
+   - 기능: 아티클 자동 발행
+   - 백링크: 아티클 본문에 원본 블로그 링크 삽입
+
+3. **페이스북 (Facebook)**
+   - API: Facebook Graph API
+   - 기능: 페이지 또는 그룹에 게시물 자동 업로드
+   - 백링크: 게시물에 블로그 링크 포함
+
+4. **인스타그램 (Instagram)**
+   - API: Instagram Basic Display API / Instagram Graph API
+   - 기능: 캡션에 블로그 링크 포함 (프로필 링크 활용)
+   - 제약: 직접 링크 삽입 불가 (프로필 링크 활용)
+
+5. **스레드 (Threads)**
+   - API: Threads API (Meta)
+   - 기능: 스레드 자동 업로드
+   - 백링크: 스레드에 블로그 링크 포함
+
+6. **레딧 (Reddit)**
+   - API: Reddit API
+   - 기능: 서브레딧에 게시물 자동 업로드
+   - 백링크: 게시물에 블로그 링크 포함
+
+**기능**:
+
+1. **플랫폼별 콘텐츠 형식 변환**
+   - 각 플랫폼의 특성에 맞는 형식으로 자동 변환
+   - 예: LinkedIn은 전문적 톤, Reddit은 캐주얼 톤
+   - 플랫폼별 최적 길이 조정
+
+2. **백링크 자동 삽입**
+   - 원본 블로그 링크 자동 삽입
+   - "원문 보기" 또는 "더 읽기" 링크 추가
+   - 각 플랫폼 정책 준수
+
+3. **배포 상태 추적**
+   - Supabase `backlink_deployments` 테이블
+   - 배포 성공/실패 상태 관리
+   - 각 플랫폼별 배포 URL 저장
+   - 배포 시간 기록
+
+4. **에러 처리 및 재시도**
+   - API 실패 시 자동 재시도 (최대 3회)
+   - 플랫폼별 에러 메시지 로깅
+   - 사용자에게 배포 상태 알림
+
+**구현 필요**:
+
+1. **각 플랫폼 API 연동**
+   - [ ] LinkedIn API 연동
+   - [ ] Medium API 연동
+   - [ ] Facebook Graph API 연동
+   - [ ] Instagram API 연동
+   - [ ] Threads API 연동
+   - [ ] Reddit API 연동
+
+2. **브라우저 자동화 (API 불가능한 경우)**
+   - [ ] Puppeteer 또는 Playwright 설정
+   - [ ] 각 플랫폼별 로그인 자동화
+   - [ ] 게시물 업로드 자동화
+   - [ ] 쿠키 및 세션 관리
+
+3. **플랫폼별 콘텐츠 변환 로직**
+   - [ ] 각 플랫폼별 템플릿 생성
+   - [ ] 톤 및 스타일 변환
+   - [ ] 길이 최적화
+
+4. **자동 배포 스케줄러**
+   - [ ] 블로그 글 발행 후 자동 트리거
+   - [ ] 사용자 설정 가능한 배포 옵션
+   - [ ] 배포 순서 관리 (동시 배포 vs 순차 배포)
+
+5. **배포 상태 관리 및 추적**
+   - [ ] 배포 상태 대시보드
+   - [ ] 실패한 배포 재시도 기능
+   - [ ] 배포 히스토리 조회
+
+---
+
+### 4. 전체 자동화 워크플로우
+
+**완전 자동화된 블로그 콘텐츠 생성 및 배포 파이프라인**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ 매일 특정 시간 (사용자 설정 가능, 기본값: 오전 9시)          │
+└─────────────────────────────────────────────────────────────┘
+                          ↓
+┌─────────────────────────────────────────────────────────────┐
+│ 1. Google Search MCP로 최신 인기 키워드 수집                 │
+│    - 트렌드 키워드 자동 검색                                  │
+│    - 도메인별 맞춤 키워드 수집                                │
+└─────────────────────────────────────────────────────────────┘
+                          ↓
+┌─────────────────────────────────────────────────────────────┐
+│ 2. 키워드 점수 계산                                          │
+│    - 대형/소형 키워드 분류                                    │
+│    - 경쟁율 분석 (상위 노출 가능성 판단)                      │
+│    - 내 블로그 적합도 평가                                    │
+└─────────────────────────────────────────────────────────────┘
+                          ↓
+┌─────────────────────────────────────────────────────────────┐
+│ 3. 최적 키워드 자동 추천                                     │
+│    - 점수 기반 자동 정렬                                      │
+│    - 롱테일 키워드 우선 추천                                  │
+│    - 사용자 대시보드에 추천 키워드 표시                       │
+└─────────────────────────────────────────────────────────────┘
+                          ↓
+┌─────────────────────────────────────────────────────────────┐
+│ 4. 형태소 분석기로 블로그 글 자동 생성                       │
+│    - 핵심 키워드 추출                                        │
+│    - 참고 블로그 글 분석                                      │
+│    - 형태소 단위 재구성                                       │
+│    - 키워드 기반 문장 생성                                    │
+└─────────────────────────────────────────────────────────────┘
+                          ↓
+┌─────────────────────────────────────────────────────────────┐
+│ 5. SEO 최적화 자동 적용                                      │
+│    - 제목 최적화 (키워드 포함, 30-60자)                      │
+│    - H2 태그 최적화 (첫 번째 H2에 주요 키워드)                 │
+│    - 메타 설명 자동 생성                                      │
+│    - 이미지 자동 삽입 및 Alt 텍스트 생성                      │
+└─────────────────────────────────────────────────────────────┘
+                          ↓
+┌─────────────────────────────────────────────────────────────┐
+│ 6. 블로그 자동 발행                                          │
+│    - Google Blogger API로 자동 업로드                        │
+│    - OAuth 토큰 사용 (이미 연동 완료)                         │
+│    - 발행 상태 확인                                           │
+└─────────────────────────────────────────────────────────────┘
+                          ↓
+┌─────────────────────────────────────────────────────────────┐
+│ 7. 여러 플랫폼에 자동 배포 (백링크 확보)                    │
+│    - LinkedIn 자동 배포                                      │
+│    - Medium 자동 배포                                        │
+│    - Facebook 자동 배포                                       │
+│    - Instagram 자동 배포                                     │
+│    - Threads 자동 배포                                        │
+│    - Reddit 자동 배포                                         │
+│    - 배포 상태 추적 및 알림                                   │
+└─────────────────────────────────────────────────────────────┘
+                          ↓
+┌─────────────────────────────────────────────────────────────┐
+│ 8. 완료 및 알림                                             │
+│    - 사용자에게 완료 알림                                    │
+│    - 배포 상태 대시보드 업데이트                              │
+│    - 성과 추적 시작                                          │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**사용자 개입 최소화**:
+- 사용자는 초기 설정만 하면 됨 (키워드 수집 시간, 배포 플랫폼 선택)
+- 시스템이 자동으로 키워드 수집 → 추천 → 글 생성 → 발행 → 배포
+- 사용자는 대시보드에서 결과만 확인
+
+---
+
+### 5. 기술 스택 추가 필요
+
+**필수 추가 기술**:
+
+1. **Google Search MCP Server**
+   - 목적: 키워드 검색 자동화
+   - 설치: MCP Server 설정 필요
+   - 참고: [GitHub Repository](https://github.com/mixelpixx/Google-Search-MCP-Server)
+
+2. **형태소 분석 서버**
+   - 옵션 1: KoNLPy (Python)
+     - 장점: 한국어 분석 정확도 높음
+     - 단점: Python 서버 별도 운영 필요
+   - 옵션 2: MeCab (C++)
+     - 장점: 빠른 속도
+     - 단점: 설치 복잡
+   - 옵션 3: OpenAI API 활용
+     - 장점: 서버 운영 불필요
+     - 단점: API 비용 발생
+
+3. **Puppeteer/Playwright**
+   - 목적: 백링크 자동화를 위한 브라우저 자동화
+   - 사용 시점: API가 제공되지 않는 플랫폼 또는 API 제한이 있는 경우
+   - 설치: `npm install puppeteer` 또는 `npm install playwright`
+
+4. **각 플랫폼 API**
+   - LinkedIn API v2
+   - Medium API
+   - Facebook Graph API
+   - Instagram Basic Display API / Instagram Graph API
+   - Threads API (Meta)
+   - Reddit API
+
+5. **스케줄링 서비스**
+   - 옵션 1: Supabase Edge Functions + pg_cron
+   - 옵션 2: Vercel Cron Jobs
+   - 옵션 3: GitHub Actions (Scheduled)
+
+---
+
+### 6. 예상 시간 및 우선순위
+
+**예상 개발 시간**:
+- 키워드 분석기 고도화: 1-2주
+  - Google Search MCP 연동: 3-4일
+  - 키워드 점수 시스템: 4-5일
+  - 자동 추천 시스템: 2-3일
+- 형태소 분석기 고도화: 1-2주
+  - 형태소 분석 서버 연동: 3-4일
+  - 블로그 글 재구성 로직: 5-6일
+  - SEO 최적화: 2-3일
+- 백링크 자동화: 2-3주
+  - 각 플랫폼 API 연동: 8-10일 (플랫폼당 1-2일)
+  - 브라우저 자동화 (필요 시): 3-4일
+  - 배포 상태 관리: 2-3일
+- **총 예상 시간**: 4-7주
+
+**우선순위**: 최우선 ⚠️
+- 완전 자동화 시스템 구축이 핵심 가치
+- 사용자 경험 대폭 개선
+- 경쟁력 있는 기능
+
+---
+
+### 8. 품질 보장 전략 (Quality Assurance Strategy)
+
+**⚠️ 핵심 원칙**: 고품질 자동화 - 단순 양산이 아닌 최적화된 콘텐츠 생성
+
+**주요 내용** (상세는 `DEVELOPMENT_PLAN.md`의 "품질 보장 전략" 섹션 참조):
+
+1. **성공 사례 분석 시스템** (필수)
+   - 유튜브 성공 영상 100개 이상 수집 및 분석
+   - 썸네일 패턴 분석 (색상, 텍스트 배치, 감정 표현)
+   - 후킹 전략 분석 (첫 3초, 첫 15초)
+   - 콘텐츠 구성 분석 (편집 패턴, 자막 스타일)
+   - 메타데이터 분석 (제목, 태그, 업로드 시간)
+
+2. **패턴 학습 및 적용**
+   - ML/AI 기반 패턴 추출
+   - 성공 패턴 기반 자동 생성
+
+3. **품질 검증 시스템**
+   - 자동 품질 점수 검증 (70점 이상)
+   - 미통과 시 자동 재생성 (최대 3회)
+   - 사용자 수동 검토 시스템 (초기 단계)
+
+4. **지속적 개선**
+   - A/B 테스트
+   - 피드백 루프
+   - 패턴 업데이트
+
+**⚠️ 중요**: Phase 3, 4 시작 전에 품질 보장 전략 구축이 필수입니다.
+
+---
+
+### 9. 체계적인 콘텐츠 생성 전략 (Systematic Content Generation Strategy)
+
+**목적**: 초기에는 수동 검토를 통해 바로 개발을 진행하고, 지속적으로 개선하여 완전 자동화를 달성
+
+**주요 내용** (상세는 `DEVELOPMENT_PLAN.md`의 "체계적인 콘텐츠 생성 전략" 섹션 참조):
+
+1. **콘텐츠 구성 요소별 전략**
+   - 썸네일 생성 전략 (무료 이미지 + 편집)
+   - 제목 생성 전략 (키워드 기반, 성공 패턴 적용)
+   - 내용 구성 전략 (구조화된 본문, 키워드 자연스러운 배치)
+   - 태그 생성 전략 (키워드 기반, 플랫폼별 최적화)
+   - 블로그 카테고리 선정 전략 (키워드 기반 매칭)
+   - 형태소 패턴 분석 및 적용 (자연스러운 한국어 문장)
+
+2. **이미지 생성 및 관리 전략** (비용 최소화 우선)
+   - **무료 이미지 라이브러리 우선 사용** ⭐ (Unsplash, Pexels, Pixabay)
+   - 간단한 이미지 편집 (Canvas API, Sharp)
+   - FFmpeg + MediaFX 영상 합성 (고정 이미지 + 음원)
+   - AI 이미지 생성 최소화 (선택적, 특수 케이스만)
+   - 이미지 재사용 시스템 (80-90% 재사용률 목표)
+
+3. **비용 효율적인 전략**
+   - 목표: 월간 $0-15
+   - 무료 이미지 라이브러리 95-98% 활용
+   - 이미지 재사용 80-90%
+   - AI 생성 최소화 (일일 0-1장)
+
+**일일 콘텐츠 목표**:
+- 롱폼 영상: 1개 (1시간 플레이리스트)
+- 숏폼 영상: 2개
+- 블로그 게시글: 4개 (블로그당 1개)
+- 썸네일: 3장 (롱폼 1 + 숏폼 2)
+- 블로그 이미지: 24-32장 (게시글당 6-8장)
+
+---
+
+### 7. 주요 개선 사항 (현재 상태 vs 목표 상태)
+
+#### 7.1 키워드 분석기
+
+**현재 상태**:
+- 수동 문서 입력 방식
+- 사용자가 직접 키워드를 찾아서 입력해야 함
+- 키워드 점수 시스템 없음
+- 경쟁율 분석 기능 없음
+
+**목표 상태**:
+- Google Search MCP로 자동 키워드 수집
+- 매일 특정 시간에 자동 키워드 검색 및 추천
+- 키워드 점수 시스템 (대형/소형, 경쟁율 분석)
+- 최적 키워드 자동 추천
+- 사용자 개입 최소화 (초기 설정만)
+
+**개선 효과**:
+- 사용자 시간 절약 (키워드 찾기 불필요)
+- 최신 트렌드 반영 (자동 수집)
+- 더 정확한 키워드 선택 (점수 기반 추천)
+
+#### 7.2 형태소 분석기
+
+**현재 상태**:
+- 기본 형태소 분석 기능만 있음
+- 형태소 빈도 분석 및 시각화
+- 의미 없는 형태소 제거
+- **블로그 글 자동 생성 기능 없음**
+
+**목표 상태**:
+- 키워드 기반 자동 블로그 글 재구성
+- SEO 최적화 자동 적용
+- 이미지 자동 삽입
+- 완전 자동화된 블로그 글 생성
+
+**개선 효과**:
+- 블로그 글 작성 시간 대폭 절약
+- SEO 최적화된 콘텐츠 자동 생성
+- 일관된 품질 유지
+
+#### 7.3 백링크 자동화
+
+**현재 상태**:
+- 미구현
+- 블로그 글 발행 후 수동으로 각 플랫폼에 배포해야 함
+
+**목표 상태**:
+- 6개 플랫폼 자동 배포
+  - LinkedIn, Medium, Facebook, Instagram, Threads, Reddit
+- 각 플랫폼에 맞는 형식으로 자동 변환
+- 백링크 자동 삽입
+- 배포 상태 추적 및 관리
+
+**개선 효과**:
+- 백링크 확보 시간 절약
+- 트래픽 증가 (여러 플랫폼 노출)
+- SEO 효과 향상
+
+#### 7.4 전체 워크플로우
+
+**현재 상태**:
+- 수동 작업이 많음
+- 키워드 찾기 → 블로그 글 작성 → 발행 → 각 플랫폼 배포 (모두 수동)
+
+**목표 상태**:
+- 완전 자동화된 파이프라인
+- 키워드 자동 수집 → 추천 → 블로그 글 자동 생성 → 자동 발행 → 자동 배포
+- 사용자는 초기 설정만 하면 됨
+
+**개선 효과**:
+- 작업 시간 90% 이상 절약
+- 완전 자동화로 확장성 확보
+- 경쟁력 있는 기능
+
+---
+
+## 🎯 다음 세션에서 해야 할 작업
+
+### 우선순위 1: Phase 2.7 - 키워드/형태소 분석기 고도화 및 백링크 자동화 (최우선) ⚠️
+
+**목적**: 완전 자동화된 블로그 콘텐츠 생성 및 배포 시스템 구축
+
+**핵심 가치**: 사용자가 키워드를 찾아서 보고하는 것이 아니라, 시스템이 자동으로 최적 키워드를 찾아서 추천하고, 블로그 글을 자동 생성하여 여러 플랫폼에 배포하는 완전 자동화 시스템
+
+**작업 내용**: 위의 "Phase 2.7" 섹션 참조
+
+**세부 작업**:
+1. Google Search MCP Server 연동
+2. 키워드 점수 시스템 구현
+3. 자동 키워드 추천 시스템
+4. 형태소 분석기 고도화 (자동 블로그 글 재구성)
+5. 백링크 자동화 (6개 플랫폼)
+
+**예상 시간**: 4-7주
+
+**⚠️ 중요**: 이 작업이 완료되면 완전 자동화된 블로그 콘텐츠 생성 및 배포 시스템이 구축됩니다.
+
+### 우선순위 2: 품질 보장 전략 구축 (Phase 3, 4 전 필수) ⚠️
+
+**목적**: 고품질 콘텐츠 생성을 위한 성공 사례 분석 및 품질 검증 시스템 구축
+
+**⚠️ 중요**: Phase 3, 4 시작 전에 반드시 완료해야 합니다.
+
+**작업 내용** (상세는 `DEVELOPMENT_PLAN.md`의 "품질 보장 전략" 섹션 참조):
+
+1. **성공 사례 분석 시스템**
+   - 유튜브 성공 영상 100개 이상 수집
+   - 썸네일 패턴 분석 (색상, 텍스트 배치, 감정 표현)
+   - 후킹 전략 분석 (첫 3초, 첫 15초)
+   - 콘텐츠 구성 분석 (편집 패턴, 자막 스타일)
+   - 메타데이터 분석 (제목, 태그, 업로드 시간)
+
+2. **패턴 학습 및 적용 시스템**
+   - ML/AI 기반 패턴 추출
+   - 성공 패턴 기반 자동 생성
+
+3. **품질 검증 시스템**
+   - 자동 품질 점수 검증 (70점 이상)
+   - 미통과 시 자동 재생성 (최대 3회)
+   - 사용자 수동 검토 시스템
+
+4. **지속적 개선 시스템**
+   - A/B 테스트
+   - 피드백 루프
+   - 패턴 업데이트
+
+**예상 시간**: 2-3개월
+
+### 우선순위 3: 비용 최소화 전략 구현 (즉시 진행 가능) ⚠️
+
+**목적**: 무료 이미지 라이브러리 우선 사용 및 FFmpeg+MediaFX 활용으로 비용 최소화
+
+**목표 비용**: 월간 $0-15
+
+**작업 내용** (상세는 `DEVELOPMENT_PLAN.md`의 "체계적인 콘텐츠 생성 전략" 섹션 참조):
+
+1. **무료 이미지 라이브러리 API 연동** ⭐ 최우선
+   - Unsplash API 연동
+   - Pexels API 연동
+   - Pixabay API 연동
+   - 키워드 기반 이미지 검색 시스템
+
+2. **이미지 편집 시스템** (무료)
+   - Canvas API (브라우저 기반)
+   - Sharp (Node.js)
+   - 텍스트 오버레이 추가
+   - 필터 적용 (밝기, 대비, 색상)
+
+3. **FFmpeg + MediaFX 영상 합성**
+   - 고정 이미지 + 음원 → 영상 합성
+   - 전환 효과 적용
+   - YouTube 최적화
+
+4. **이미지 재사용 시스템**
+   - 이미지 라이브러리 구축 (Supabase Storage)
+   - 키워드 기반 검색
+   - 재사용률 80-90% 목표
+
+5. **AI 이미지 생성** (선택적, 최소한)
+   - 특수 케이스만 사용
+   - 일일 0-1장 목표
+
+**예상 시간**: 2-3주
+
+**비용 목표**: 월간 $0-15 (무료 이미지 95-98% 활용 시)
+
+### 우선순위 4: API 테스트 및 검증 (즉시 진행)
+
+**목적**: 실제 API 키로 Google/Blogger, YouTube, Suno API 연동 테스트
+
+**작업 내용**:
+1. **설정 페이지에서 API 키 입력**
+   - Google API Key 입력
+   - Google Client ID/Secret 입력
+   - Suno API Key 입력
+   - Context7 API Key 입력 (선택사항)
+   - YouTube API Key 입력 (향후 필요)
+
+2. **블로거 모듈 테스트**
+   - 블로그 목록 조회 테스트
+   - 포스트 목록 조회 테스트
+   - API 키 유효성 검증
+   - 에러 처리 확인
+
+3. **대시보드 데이터 연동 테스트**
+   - 실제 데이터가 표시되는지 확인
+   - 최근 활동 목록이 정상적으로 표시되는지 확인
+
+4. **문제 발견 시 수정**
+   - API 호출 에러 처리
+   - 데이터 형식 불일치 수정
+   - 사용자 경험 개선
+
+**예상 시간**: 1-2시간
+
+### 우선순위 2: API 테스트 및 검증 (즉시 진행)
+
+**목적**: 실제 API 키로 Google/Blogger, YouTube, Suno API 연동 테스트
+
+**작업 내용**: 아래 "당장 해야 할 작업" 섹션 참조
+
+**예상 시간**: 1-2시간
+
+### 우선순위 3: 블로거 모듈 OAuth 2.0 인증 추가 (높음)
+
+**목적**: 포스트 작성/수정 기능을 위한 OAuth 2.0 인증 구현
+
+**작업 내용**:
+1. **OAuth 2.0 인증 플로우 구현**
+   - Google OAuth 인증 버튼 추가
+   - 인증 토큰 저장 및 관리
+   - 토큰 갱신 로직
+
+2. **포스트 작성/수정 기능 구현**
+   - `createPost()` 함수 완성
+   - `updatePost()` 함수 완성
+   - 포스트 작성 UI 컴포넌트
+   - 포스트 수정 UI 컴포넌트
+
+3. **블로거 계정 연동 관리**
+   - `blogger_accounts` 테이블 활용
+   - 계정 연결 상태 표시
+   - 계정 해제 기능
+
+**예상 시간**: 3-4시간
+
+**참고**: OAuth 2.0 인증은 이미 구현되어 있음. 포스트 작성/수정 UI만 추가하면 됨.
+
+### 우선순위 4: 성과 분석 대시보드 (높음, 신규)
+
+**목적**: 조회수, 성과 지표, 그래프를 통한 직관적인 분석
+
+**작업 내용**:
+1. **그래프 라이브러리 추가**
+   - recharts 또는 chart.js 설치
+   - 기본 차트 컴포넌트 생성
+
+2. **YouTube Analytics API 연동**
+   - 사용자별 API 키 사용
+   - 조회수 데이터 수집
+   - Supabase에 통계 데이터 저장
+
+3. **성과 분석 UI 구현**
+   - 일별/주별/월별 조회수 그래프
+   - 성과 비교 로직 (지난달 vs 이번달)
+   - 연도별 섹션
+   - 지표 카드 (총 조회수, 평균, 최고 등)
+   - 트렌드 분석
+
+**예상 시간**: 4-6시간
+
+### 우선순위 5: Phase 2.5 - Lighthouse 블로그 최적화 (높음)
+
+**목적**: 사용자 블로그를 Lighthouse 100점(또는 근접)으로 최적화
+
+**작업 내용**:
+1. **Lighthouse 분석 모듈**
+   - Lighthouse CI 설정
+   - 블로그 URL 분석
+   - 문제점 진단
+
+2. **최적화 실행 모듈**
+   - 이미지 최적화 (WebP 변환, 압축)
+   - HTML/CSS/JS 최적화
+   - 메타 태그 최적화
+
+3. **UI 구현**
+   - "내 블로그 최적화하기" 버튼
+   - 진행 상황 표시
+   - 최적화 전/후 비교 리포트
+
+**예상 시간**: 2주
+
+### 우선순위 6: 멀티 테넌트 API 키 관리 개선 (중간)
+
+**목적**: 사용자별 API 키를 안전하게 관리하고 사용
+
+**작업 내용**:
+- API 키 암호화/복호화 모듈 구현
+- 서비스 레이어에 사용자 API 키 주입 패턴
+- API 키 유효성 검증
+- RLS 정책 확인 및 강화
+
+**예상 시간**: 2-3시간
+
+---
+
+## 📝 체크리스트 (진행 단계)
+
+### Phase 1: 기본 인증 및 설정 ✅ 완료
+- [x] 프로젝트 구조 설정
+- [x] 인증 모듈 구현
+- [x] 설정 모듈 구현
+- [x] 대시보드 레이아웃
+- [x] Vercel 배포
+- [x] OAuth 설정
+
+### Phase 1.4.5: 랜딩페이지 구현 ✅ 완료
+- [x] 랜딩페이지 컴포넌트 생성
+- [x] 메인 페이지(/)를 랜딩페이지로 설정
+- [x] 인증 상태에 따른 리다이렉트 로직
+- [x] 현대적이고 매력적인 UI 디자인
+- [x] 주요 기능 소개 섹션
+- [x] CTA 버튼 (로그인/회원가입)
+
+### Phase 1.5: 대시보드 데이터 연동 ✅ 완료
+- [x] Supabase에서 통계 데이터 조회
+- [x] 블로그 게시물 수 집계
+- [x] 음원 생성 수 집계
+- [x] 유튜브 영상 수 집계
+- [x] 최근 활동 목록 구현
+- [x] 시간순 정렬 및 타입별 아이콘
+
+### Phase 1.6: 성과 분석 대시보드 ❌ 미시작
+- [ ] 그래프 라이브러리 추가
+- [ ] 조회수 데이터 수집
+- [ ] 성과 비교 로직
+- [ ] 월별/연도별 섹션
+- [ ] 지표 카드 구현
+
+### Phase 1.7: API 키 발급 가이드 구현 ✅ 완료
+- [x] API 가이드 타입 및 데이터 정의
+- [x] API 가이드 페이지 컴포넌트 생성
+- [x] 설정 페이지에 물음표 버튼 추가
+- [x] 라우팅 추가 및 빌드 확인
+- [x] Context7 API 가이드 포함
+
+### Phase 2: 블로거 모듈 기본 구조 ⏳ 진행 중
+- [x] 타입 정의 (`BloggerPost`, `BloggerBlog` 등)
+- [x] 서비스 레이어 (`bloggerService.ts`)
+- [x] Google Blogger API v3 연동 (사용자별 API 키 사용)
+- [x] 블로그 목록 컴포넌트
+- [x] 블로그 포스트 목록 조회
+- [x] 게시물 작성/수정 UI (OAuth 2.0 인증 완료)
+- [x] 자동 포스트 생성 기능 (키워드 기반)
+- [x] 완전 자동화 모드 (스케줄링)
+- [ ] API 키 암호화/복호화 통합 (향후 구현)
+
+### Phase 2.7: 키워드/형태소 분석기 고도화 및 백링크 자동화 ❌ 미시작 (2024-12-03 저녁 세션 요청) ⚠️ 최우선
+
+#### 1. 키워드 분석기 고도화
+- [ ] Google Search MCP Server 설정 및 연동
+- [ ] 자동 키워드 검색 스케줄러 (매일 특정 시간)
+- [ ] 검색 결과 파싱 및 키워드 추출
+- [ ] 키워드 저장 및 히스토리 관리 (Supabase 테이블)
+- [ ] 키워드 점수 시스템 (대형/소형 분류)
+- [ ] 경쟁율 분석 알고리즘 (상위 노출 가능성 판단)
+- [ ] 최적 키워드 자동 추천 시스템
+- [ ] 추천 키워드 UI (대시보드, 점수 시각화)
+
+#### 2. 형태소 분석기 고도화
+- [ ] 형태소 분석 서버 연동 (KoNLPy, MeCab 또는 OpenAI API)
+- [ ] 키워드 기반 문장 생성 알고리즘
+- [ ] 블로그 글 재구성 로직
+- [ ] SEO 최적화 자동 적용 (제목, H2, 메타 태그)
+- [ ] 이미지 자동 삽입 기능
+
+#### 3. 백링크 자동화
+- [ ] LinkedIn API 연동 또는 브라우저 자동화
+- [ ] Medium API 연동 또는 브라우저 자동화
+- [ ] Facebook Graph API 연동 또는 브라우저 자동화
+- [ ] Instagram API 연동 또는 브라우저 자동화
+- [ ] Threads API 연동 또는 브라우저 자동화
+- [ ] Reddit API 연동 또는 브라우저 자동화
+- [ ] 플랫폼별 콘텐츠 형식 변환 로직
+- [ ] 자동 배포 스케줄러
+- [ ] 배포 상태 관리 및 추적 (Supabase 테이블)
+- [ ] 에러 처리 및 재시도 로직
+
+#### 4. 전체 자동화 워크플로우 통합
+- [ ] 전체 파이프라인 통합 테스트
+- [ ] 사용자 설정 UI (스케줄링, 배포 플랫폼 선택)
+- [ ] 완료 알림 및 상태 대시보드
+
+### Phase 2.5: Lighthouse 최적화 ❌ 미시작
+- [ ] Lighthouse 분석 모듈
+- [ ] 최적화 실행 모듈
+- [ ] UI 구현
+- [ ] 비교 리포트
+
+### Phase 3: 음원 플레이리스트 자동화 ❌ 미시작
+- [ ] 플레이리스트 분석 모듈
+- [ ] 음원 생성 개선 (10-20개 묶음)
+- [ ] 이미지/영상 생성 모듈
+- [ ] FFmpeg 영상 합성
+- [ ] 자동 업로드
+- [ ] DistroKid 자동화
+
+### Phase 4: 유튜브 쇼츠 자동화 ❌ 미시작
+- [ ] 쇼츠 분석 모듈
+- [ ] 콘텐츠 생성 모듈
+- [ ] 자동 편집
+- [ ] 업로드 모듈
+
+---
+
+## 🔧 기술 스택
+
+### 프론트엔드
+- **React 19.2.0**: UI 프레임워크
+- **TypeScript**: 타입 안정성
+- **Vite 7.2.4**: 빌드 도구
+- **React Router DOM 7.9.6**: 라우팅
+- **Tanstack Query 5.90.11**: 데이터 페칭
+- **Tailwind CSS 4.1.17**: 스타일링
+- **Shadcn/ui**: UI 컴포넌트
+- **Sonner**: Toast 알림
+
+### 백엔드/서비스
+- **Supabase**: 인증, 데이터베이스
+- **Google Blogger API v3**: 블로그 관리
+- **Google Search MCP Server**: 키워드 검색 자동화 ⚠️ 추가 필요
+  - [GitHub Repository](https://github.com/mixelpixx/Google-Search-MCP-Server)
+  - MCP Server 설정 및 연동 필요
+- **YouTube Data API v3**: 영상 업로드
+- **Suno API**: 음원 생성
+- **FFmpeg 6.0+**: 영상/오디오 처리
+- **MediaFX**: 영상 효과 추가 (FFmpeg와 함께 사용)
+- **Context7 MCP**: 고품질 콘텐츠 생성
+- **형태소 분석 서버**: 한국어 형태소 분석 ⚠️ 추가 필요
+  - 옵션 1: KoNLPy (Python 서버)
+  - 옵션 2: MeCab (C++ 기반, 빠름)
+  - 옵션 3: OpenAI API 활용
+- **이미지 생성 및 편집** (비용 최소화 우선):
+  - **무료 이미지 라이브러리** ⭐ (우선 사용):
+    - **Unsplash API**: 무료, 고품질 사진
+    - **Pexels API**: 무료, 다양한 카테고리
+    - **Pixabay API**: 무료, 상업적 사용 가능
+  - **이미지 편집 도구** (무료):
+    - **Canvas API**: 브라우저 기반 이미지 편집
+    - **Sharp**: Node.js 이미지 처리
+  - **AI 이미지 생성 API** (선택적, 최소한):
+    - Nano Banana, Hixfield, DALL-E 3 (특수 케이스만)
+- **Puppeteer/Playwright**: 백링크 자동화를 위한 브라우저 자동화 ⚠️ 추가 필요
+  - API가 제공되지 않는 플랫폼용
+- **각 플랫폼 API**: 백링크 자동화용 ⚠️ 추가 필요
+  - LinkedIn API v2
+  - Medium API
+  - Facebook Graph API
+  - Instagram Basic Display API / Instagram Graph API
+  - Threads API (Meta)
+  - Reddit API
+- **스케줄링 서비스**: 자동 키워드 수집 및 배포용 ⚠️ 추가 필요
+  - 옵션 1: Supabase Edge Functions + pg_cron
+  - 옵션 2: Vercel Cron Jobs
+  - 옵션 3: GitHub Actions (Scheduled)
+
+### 배포
+- **Vercel**: 프론트엔드 배포
+- **GitHub**: 버전 관리 (rmswo87/autobot)
+
+---
+
+## 📚 주요 문서 참조
+
+### 필수 읽기 문서 (새 세션 시작 시)
+1. **이 문서 (SESSION_CONTINUITY.md)** ⭐ - 프로젝트 개요 및 현재 상태
+2. **DEVELOPMENT_PLAN.md** (버전 3.0.0) ⭐ - 통합 마스터 개발 계획서
+   - Phase별 체크리스트
+   - 아키텍처 원칙
+   - 멀티 테넌트 데이터 모델
+   - 우선순위 요약
+3. **DOCUMENT_UPDATE_GUIDE.md** ⭐ - 문서 업데이트 가이드 (작업 시 필수)
+4. **API_KEYS.md**: API 키 관리 (민감 정보, 필요 시)
+
+### 참고 문서 (선택적)
+- `MULTI_TENANT_ARCHITECTURE.md`: 멀티 테넌트 구조 상세 (DEVELOPMENT_PLAN.md에 통합됨)
+- `QUALITY_AUTOMATION_PLAN.md`: 고품질 자동화 계획 (DEVELOPMENT_PLAN.md에 통합됨)
+- `FFMPEG_IMPLEMENTATION_PLAN.md`: FFmpeg 구현 상세 (DEVELOPMENT_PLAN.md에 통합됨)
+- `ffmpeg.md`: n8n 기반 영상 생성 참고
+- `CURRENT_STATUS.md`: 현재 상태 요약
+
+**⚠️ 참고**: 통합된 문서들은 `DEVELOPMENT_PLAN.md`에 모든 내용이 포함되어 있습니다. 필요 시 참고용으로만 사용하세요.
+
+---
+
+## 🚀 당장 해야 할 작업 (우선순위 순)
+
+### 1. Phase 2.7: 키워드/형태소 분석기 고도화 및 백링크 자동화 (최우선) ⚠️
+
+**목적**: 완전 자동화된 블로그 콘텐츠 생성 및 배포 시스템 구축
+
+**작업 내용**: 위의 "Phase 2.7" 섹션 참조
+
+**예상 시간**: 4-7주
+
+**⚠️ 중요**: 이 작업이 완료되면 완전 자동화된 블로그 콘텐츠 생성 및 배포 시스템이 구축됩니다.
+
+### 2. API 테스트 및 검증 (즉시 진행) ⚠️ 중요
+
+**목적**: 실제 API 키로 Google/Blogger, YouTube, Suno API 연동 테스트
+
+**작업 내용**:
+1. **설정 페이지에서 API 키 입력 및 저장**
+   - Google API Key 입력
+   - Google Client ID/Secret 입력
+   - Suno API Key 입력
+   - Context7 API Key 입력 (선택사항)
+
+2. **블로거 모듈 테스트**
+   - `/blogger` 페이지 접속
+   - 블로그 목록 조회 테스트
+   - 포스트 목록 조회 테스트
+   - API 키 유효성 검증
+   - 에러 처리 확인
+
+3. **대시보드 데이터 연동 테스트**
+   - 실제 데이터가 표시되는지 확인
+   - 최근 활동 목록이 정상적으로 표시되는지 확인
+
+4. **문제 발견 시 수정**
+   - API 호출 에러 처리
+   - 데이터 형식 불일치 수정
+   - 사용자 경험 개선
+
+**예상 시간**: 1-2시간
+
+**⚠️ 중요**: 실제 API 키로 테스트하여 실제 동작을 확인하고, 문제가 있으면 즉시 수정해야 합니다.
+
+### 3. 블로거 모듈 OAuth 2.0 인증 추가 (높음)
+
+**목적**: 포스트 작성/수정 기능을 위한 OAuth 2.0 인증 구현
+
+**작업 내용**:
+1. **OAuth 2.0 인증 플로우 구현**
+   - Google OAuth 인증 버튼 추가
+   - 인증 토큰 저장 및 관리 (`blogger_accounts` 테이블 활용)
+   - 토큰 갱신 로직
+
+2. **포스트 작성/수정 기능 구현**
+   - `createPost()` 함수 완성
+   - `updatePost()` 함수 완성
+   - 포스트 작성 UI 컴포넌트
+   - 포스트 수정 UI 컴포넌트
+
+3. **블로거 계정 연동 관리**
+   - 계정 연결 상태 표시
+   - 계정 해제 기능
+
+**예상 시간**: 3-4시간
+
+**참고**: OAuth 2.0 인증은 이미 구현되어 있음. 포스트 작성/수정 UI만 추가하면 됨.
+
+### 4. 성과 분석 대시보드 (높음, 신규)
+
+**목적**: 조회수, 성과 지표, 그래프를 통한 직관적인 분석
+
+**작업 내용**:
+- 그래프 라이브러리 추가 (recharts 또는 chart.js)
+- YouTube Analytics API 연동 (사용자별 API)
+- 조회수 데이터 수집 및 저장
+- 월별/연도별 비교 로직
+- 지표 카드 구현
+- 트렌드 그래프
+
+**예상 시간**: 4-6시간
+
+### 5. Phase 2.5 - Lighthouse 블로그 최적화 (높음)
+
+**목적**: 사용자 블로그를 Lighthouse 100점(또는 근접)으로 최적화
+
+**작업 내용**:
+- Lighthouse 분석 모듈
+- 최적화 실행 모듈
+- UI 구현
+- 비교 리포트
+
+**예상 시간**: 2주
+
+---
+
+## 🎨 UI/UX 개선 필요 사항
+
+### 대시보드
+- [x] 실제 데이터 연동 ✅
+- [ ] 성과 분석 섹션 추가
+- [ ] 그래프 및 차트
+- [ ] 로딩 상태 개선 (스켈레톤 UI)
+
+### 성과 분석 대시보드 (신규)
+- [ ] 조회수 그래프 (일별/주별/월별)
+- [ ] 성과 비교 카드 (지난달 vs 이번달)
+- [ ] 연도별 섹션
+- [ ] 트렌드 분석
+- [ ] 지표 카드 (총 조회수, 평균, 최고 등)
+
+---
+
+## 🔐 보안 고려사항
+
+### API 키 관리
+- [ ] 암호화 저장 (현재는 평문 저장)
+- [ ] 사용 시 복호화
+- [ ] 메모리에서 즉시 제거
+- [ ] RLS 정책 확인
+
+### 데이터 격리
+- [ ] Supabase RLS 정책 확인
+- [ ] 사용자별 데이터 접근 제어
+- [ ] API 키 사용 로그 (암호화된 형태)
+
+---
+
+## 📊 데이터 모델 (Supabase)
+
+### 기존 테이블
+- `user_api_keys`: 사용자별 API 키 저장
+- `auth.users`: Supabase 인증 사용자
+
+### 추가 필요 테이블
+- `blog_posts`: 블로그 게시물 메타데이터
+- `music_projects`: 음원 프로젝트 정보
+- `youtube_videos`: 유튜브 영상 메타데이터
+- `analytics_data`: 성과 분석 데이터 (조회수, 통계 등)
+- `user_blog_settings`: 블로그 설정 및 최적화 히스토리
+
+---
+
+## 🐛 알려진 이슈
+
+### 해결된 이슈
+- ✅ 무한 로딩 문제: 세션에서 직접 user 정보 가져오도록 수정
+- ✅ 빌드 에러: 사용하지 않는 import 제거
+- ✅ 타임아웃 문제: `getUser()` 대신 세션 사용
+
+### 현재 이슈 없음
+
+---
+
+## 📝 개발 원칙
+
+### 코드 작성
+1. **타입 안정성**: TypeScript 100% 활용
+2. **모듈화**: Feature-based 구조 유지 (`features/` 디렉토리)
+3. **재사용성**: 공통 로직은 `shared/`에
+4. **에러 처리**: 사용자 친화적 메시지
+5. **성능**: 불필요한 리렌더링 방지
+
+### 의존성 규칙 (중요!)
+```
+App Layer (routes, providers)
+    ↓
+Features Layer (auth, settings, blogger, music, youtube)
+    ↓
+Shared Layer (components, hooks, services, utils)
+    ↓
+External Libraries (react, axios, shadcn/ui)
+```
+
+**허용**: Features → Shared, Features → External Libraries  
+**금지**: Shared → Features (순환 의존성), Features → Features (직접 의존)
+
+### 멀티 테넌트 구현 패턴
+```typescript
+// 모든 외부 API 호출 시 사용자 API 키 사용
+// 1. 사용자 API 키 조회 (암호화된 상태)
+const apiKeys = await apiKeyService.getApiKeys()
+
+// 2. API 키 복호화
+const decryptedKey = decryptApiKey(apiKeys.google_api_key)
+
+// 3. API 호출 시 사용
+const blogger = new BloggerAPI(decryptedKey)
+
+// 4. 사용 후 메모리에서 즉시 제거
+```
+
+### Git 관리
+- **커밋**: 의미 있는 단위로 커밋
+- **푸시**: 테스트 가능한 작업 완료 시에만 푸시
+- **브랜치**: 필요 시 feature 브랜치 사용
+
+### 문서화
+- **코드 주석**: 복잡한 로직에 JSDoc 주석
+- **타입 정의**: 모든 타입 명확히 정의 (`types/*.types.ts`)
+- **Barrel export**: 각 모듈에 `index.ts` 필수
+
+---
+
+## 🎯 성공 기준
+
+### Phase 1.5: 대시보드 데이터 연동
+- [ ] 실제 데이터가 표시됨
+- [ ] 최근 활동 목록이 동작함
+- [ ] 통계가 정확함
+
+### Phase 1.6: 성과 분석 대시보드
+- [ ] 조회수 그래프가 표시됨
+- [ ] 월별/연도별 비교가 가능함
+- [ ] 지표가 정확함
+- [ ] 직관적인 시각화
+
+### Phase 2: 블로거 모듈
+- [ ] 사용자별 Blogger API 연동
+- [ ] 게시물 작성/수정 가능
+- [ ] 블로그 목록 표시
+
+### Phase 2.5: Lighthouse 최적화
+- [ ] "내 블로그 최적화하기" 버튼 동작
+- [ ] Lighthouse 점수 개선
+- [ ] 비교 리포트 생성
+
+---
+
+## 🔗 빠른 참조
+
+### 주요 파일 경로
+- **라우트**: `src/app/routes.tsx`
+- **인증 컨텍스트**: `src/features/auth/contexts/AuthContext.tsx`
+- **대시보드**: `src/features/dashboard/components/DashboardPage.tsx`
+- **설정**: `src/features/settings/components/SettingsPage.tsx`
+- **API 가이드**: `src/features/settings/components/ApiGuidePage.tsx`
+- **블로거**: `src/features/blogger/components/BloggerPage.tsx`
+- **랜딩페이지**: `src/features/landing/components/LandingPage.tsx`
+- **Supabase 클라이언트**: `src/shared/services/supabase/client.ts`
+
+### 환경 변수
+- `VITE_SUPABASE_URL`: Supabase 프로젝트 URL
+- `VITE_SUPABASE_ANON_KEY`: Supabase Anon Key
+- `.env.local`에 설정 (Git에 커밋되지 않음)
+
+### 배포
+- **URL**: `https://autobot-cyan.vercel.app`
+- **레포지토리**: `rmswo87/autobot`
+- **자동 배포**: GitHub push 시 Vercel 자동 배포
+
+---
+
+## 📋 다음 세션 시작 체크리스트
+
+### 필수 단계
+1. [ ] **이 문서 (SESSION_CONTINUITY.md) 전체 읽기** ⭐
+   - 프로젝트 개요 및 핵심 목표 이해
+   - 완료된 작업 확인
+   - 현재 프로젝트 구조 파악
+   - 다음 우선순위 작업 확인
+
+2. [ ] **DEVELOPMENT_PLAN.md (버전 3.0.0) 확인** ⭐
+   - Phase별 체크리스트 확인
+   - 아키텍처 원칙 이해
+   - 멀티 테넌트 데이터 모델 확인
+   - 우선순위 요약 확인
+   - **⚠️ 모든 체크리스트는 이 문서에서만 관리됩니다**
+
+3. [ ] **DOCUMENT_UPDATE_GUIDE.md 확인** ⭐
+   - 문서 업데이트 워크플로우 이해
+   - 작업 완료 시 업데이트 방법 확인
+
+4. [ ] **현재 프로젝트 상태 파악**
+   - `src/features/` 디렉토리 구조 확인
+   - 완료된 모듈 vs 미구현 모듈 확인
+   - Supabase 테이블 구조 확인
+
+5. [ ] **우선순위에 따라 작업 진행**
+   - ⚠️ **우선순위 1: Phase 2.7 - 키워드/형태소 분석기 고도화 및 백링크 자동화 (최우선)**
+     - Phase 2.7 섹션 확인 (위 문서 참조)
+     - Google Search MCP Server 연동 방법 검토
+     - 형태소 분석 서버 선택 및 연동 방법 검토
+     - 백링크 자동화 전략 수립
+   - ⚠️ **우선순위 2: 품질 보장 전략 구축** (Phase 3, 4 전 필수)
+     - 성공 사례 분석 시스템 구축
+     - 패턴 학습 및 적용 시스템
+     - 품질 검증 시스템
+   - ⚠️ **우선순위 3: 비용 최소화 전략 구현** (즉시 진행 가능)
+     - 무료 이미지 라이브러리 API 연동 (Unsplash/Pexels/Pixabay)
+     - 이미지 편집 시스템 (Canvas API, Sharp)
+     - FFmpeg + MediaFX 영상 합성
+     - 이미지 재사용 시스템
+   - 우선순위 4: API 테스트 및 검증
+   - 우선순위 5: 블로거 모듈 OAuth 2.0 인증 추가
+   - 우선순위 6: 성과 분석 대시보드
+   - 우선순위 7: Phase 2.5 - Lighthouse 최적화
+
+### 선택적 단계
+6. [ ] `docs/API_KEYS.md` 확인 (API 키 관련 작업 시)
+7. [ ] `docs/ffmpeg.md` 확인 (FFmpeg 관련 작업 시)
+8. [ ] `docs/NEW_CHAT_PROMPT.md` 확인 (새 채팅 시작 시 프롬프트)
+
+---
+
+## 💡 개발 팁
+
+### 멀티 테넌트 구현 시
+- 항상 사용자 ID로 데이터 필터링
+- API 키는 사용 시에만 복호화
+- RLS 정책 확인
+
+### FFmpeg 사용 시
+- 서버 사이드에서만 실행 (Node.js)
+- 대용량 파일 처리 시 스트리밍 고려
+- 에러 처리 강화 (FFmpeg는 실패 가능성 높음)
+
+### 성과 분석 구현 시
+- YouTube Analytics API 할당량 고려
+- 데이터 캐싱 전략 필요
+- 실시간 업데이트 vs 배치 업데이트 결정
+
+---
+
+## 🎓 학습 자료
+
+### Lighthouse 최적화
+- [Lighthouse Best Practices](https://developer.chrome.com/docs/lighthouse/best-practices/)
+- [Web Vitals](https://web.dev/vitals/)
+
+### FFmpeg
+- [FFmpeg 공식 문서](https://ffmpeg.org/documentation.html)
+- `docs/ffmpeg.md`: n8n 기반 영상 생성 참고
+- `docs/FFMPEG_IMPLEMENTATION_PLAN.md`: 구현 계획
+
+### YouTube API
+- [YouTube Data API v3](https://developers.google.com/youtube/v3)
+- [YouTube Analytics API](https://developers.google.com/youtube/analytics)
+
+### 성과 분석
+- [recharts](https://recharts.org/): React 차트 라이브러리
+- [Chart.js](https://www.chartjs.org/): 차트 라이브러리
+
+---
+
+**최종 업데이트**: 2024-12-03 (저녁 세션 - Phase 2.7 상세 계획, 품질 보장 전략, 비용 최소화 전략 수립)  
+**다음 세션 시작 시**: 이 문서를 먼저 확인하세요! 특히 Phase 2.7, 품질 보장 전략, 비용 최소화 전략 섹션을 확인하세요.
+
+**⚠️ 중요 변경사항**:
+- 품질 보장 전략 추가 (성공 사례 분석 시스템 필수)
+- 비용 최소화 전략 강화 (무료 이미지 라이브러리 우선, FFmpeg+MediaFX 활용)
+- 목표 비용: 월간 $0-15 (무료 이미지 95-98% 활용 시)
+
+---
+
+## 🎉 이번 세션 주요 성과 (2024-12-03 오후)
+
+### 완료된 핵심 기능
+
+1. **Google OAuth 2.0 인증 완전 구현** ✅
+   - OAuth 인증 플로우 완성
+   - 블로그 목록 조회 성공
+   - 사용자 경험 개선
+
+2. **API 키 관리 시스템 개선** ✅
+   - 유효성 검증 강화
+   - 보이기/숨기기 토글
+   - 사용자 친화적 에러 메시지
+
+3. **대시보드 및 UI 개선** ✅
+   - API 키 상태 표시
+   - 빠른 시작 기능 개선
+
+4. **문서 정리 및 구조 최적화** ✅
+   - Deprecated 문서 정리
+   - 문서 사용 가이드 개선
+
+### 현재 작동 중인 기능
+
+- ✅ Google OAuth 2.0 인증 (블로그 목록 조회 성공)
+- ✅ 블로그 목록 표시
+- ✅ 포스트 목록 조회
+- ✅ OAuth 토큰 관리 (저장, 조회, 갱신, 삭제)
+- ✅ API 키 관리 및 검증
+- ✅ 대시보드 데이터 연동
+
+### 다음 우선순위 작업
+
+1. **블로거 포스트 작성/수정 UI 구현** (높음)
+   - OAuth 토큰은 이미 준비되어 있음
+   - 서비스 함수는 구현되어 있음
+   - UI 컴포넌트만 추가하면 됨
+
+2. **블로거 기능 개선** (높음)
+   - 포스트 상세 보기
+   - 포스트 삭제
+   - 페이지네이션
+
+3. **성과 분석 대시보드** (중간)
+4. **Lighthouse 최적화** (중간)
+
+---
+
+## 📝 이번 세션 작업 요약 (2024-12-03)
+
+### 오전 세션 완료된 작업
+
+1. **Phase 1.4.5: 랜딩페이지 구현** ✅
+   - 사용자 후킹을 위한 매력적인 랜딩페이지 생성
+   - 인증 상태에 따른 자동 리다이렉트
+   - 현대적이고 깔끔한 UI 디자인
+
+2. **Phase 1.5: 대시보드 데이터 연동** ✅
+   - Supabase에서 실제 통계 데이터 조회
+   - 최근 활동 목록 구현 (시간순 정렬, 타입별 아이콘)
+   - date-fns 패키지 추가
+
+3. **Phase 1.7: API 키 발급 가이드 구현** ✅
+   - 각 API 키별 발급 가이드 페이지 생성
+   - Context7 MCP 필요성 설명 추가
+   - 설정 페이지에서 가이드로 쉽게 이동 가능
+
+### 오후 세션 완료된 작업 (2024-12-03 오후)
+
+1. **문서 정리 및 구조 최적화** ✅
+   - Deprecated 문서 3개 삭제 (QUALITY_AUTOMATION_PLAN.md, FFMPEG_IMPLEMENTATION_PLAN.md, MULTI_TENANT_ARCHITECTURE.md)
+   - README.md 업데이트 및 문서 사용 가이드 개선
+   - CURRENT_STATUS.md 최신 상태 반영
+
+2. **API 키 관리 개선** ✅
+   - API 키 유효성 검증 로직 개선 (형식 검증 + 실제 API 호출 검증)
+   - 설정 페이지에 보이기/숨기기 토글 추가 (모든 API 키 필드)
+   - 저장 시 자동 검증 기능 추가
+   - 사용자 친화적 에러 메시지
+
+3. **대시보드 개선** ✅
+   - API 키 상태 표시 섹션 추가
+   - 빠른 시작 버튼에 API 키 필요 여부 표시
+   - Link 컴포넌트로 변경 (a 태그 → Link)
+
+4. **블로거 서비스 에러 처리 개선** ✅
+   - 상세한 에러 로깅 추가
+   - HTTP 상태 코드별 사용자 친화적 메시지
+   - OAuth 필요 여부 감지 및 안내
+
+5. **Google OAuth 2.0 인증 완전 구현** ✅
+   - `bloggerOAuthService.ts` 생성
+   - OAuth 인증 URL 생성 (Client ID 사용)
+   - Authorization Code를 Access Token으로 교환 (Client Secret 사용)
+   - Refresh Token으로 Access Token 갱신
+   - OAuth 토큰 저장/조회/삭제 (Supabase `blogger_accounts` 테이블)
+   - OAuth 콜백 처리 (`BloggerOAuthCallback.tsx`)
+   - State 검증 (CSRF 방지)
+   - 블로거 페이지에 "Google 계정 연결" 버튼 추가
+   - 연동 상태 표시 및 연동 해제 기능
+
+6. **블로거 모듈 OAuth 통합** ✅
+   - OAuth 토큰 우선 사용 로직
+   - OAuth 토큰이 없을 때는 API 키로 시도하지 않고 바로 OAuth 인증 요구
+   - 블로그 목록 조회 성공 (OAuth 토큰 사용)
+
+7. **API 가이드 개선** ✅
+   - Client ID 가이드에 리디렉션 URI 설정 방법 상세히 추가
+   - Client Secret 가이드에 보안 주의사항 추가
+   - `importantNotes` 필드 추가 및 UI 표시
+   - 사용자 친화적인 단계별 안내
+
+**Phase 2: 블로거 모듈 기본 구조** ✅ 완료
+- 타입 정의 및 서비스 레이어 완성
+- 블로그 목록 조회 기능 구현 (OAuth 토큰 사용)
+- 포스트 목록 조회 기능 구현
+- OAuth 2.0 인증 완전 구현 및 테스트 완료
+
+### 작업 과정 및 결정 사항
+
+1. **랜딩페이지 디자인 개선**
+   - 사용자 요청에 따라 Sparkles 아이콘 제거
+   - 텍스트 간소화 ("단순 양산이 아닌..." 문구 제거)
+   - 기능 설명 간소화 (블로그 최적화: "Lighthouse 최적화 작업", 음원 플레이리스트: "유튜브 업로드까지 완전 자동화")
+   - 고품질 콘텐츠 기능 카드 제거
+
+2. **Context7 MCP 필요성 명확화**
+   - 고품질 콘텐츠 생성을 위한 필수 서비스로 설명
+   - 블로그 및 유튜브 콘텐츠 최적화에 사용
+   - API 가이드에 상세 설명 추가
+
+3. **블로거 모듈 구현 전략**
+   - API 키만으로 가능한 기능(조회)부터 구현
+   - OAuth 2.0이 필요한 기능(작성/수정)은 향후 구현으로 분리
+   - 사용자에게 현재 상태를 명확히 안내
+
+### 다음 세션 작업 계획
+
+**⚠️ 최우선 작업** (우선순위 순):
+
+1. **Phase 2.7: 키워드/형태소 분석기 고도화 및 백링크 자동화** (최우선) ⚠️
+   - Google Search MCP Server 연동
+   - 키워드 점수 시스템 (대형/소형, 경쟁율 분석)
+   - 자동 키워드 추천 시스템
+   - 형태소 분석기 고도화 (자동 블로그 글 재구성)
+   - 백링크 자동화 (6개 플랫폼)
+   - 예상 시간: 4-7주
+   - 상세 내용: 위의 "Phase 2.7" 섹션 참조
+
+2. **품질 보장 전략 구축** (Phase 3, 4 전 필수) ⚠️
+   - 성공 사례 분석 시스템 (유튜브 성공 영상 100개 이상 수집)
+   - 패턴 학습 및 적용 시스템
+   - 품질 검증 시스템
+   - 지속적 개선 시스템
+   - 예상 시간: 2-3개월
+   - 상세 내용: `DEVELOPMENT_PLAN.md`의 "품질 보장 전략" 섹션 참조
+
+3. **비용 최소화 전략 구현** (즉시 진행 가능) ⚠️
+   - 무료 이미지 라이브러리 API 연동 (Unsplash/Pexels/Pixabay) ⭐ 최우선
+   - 이미지 편집 시스템 (Canvas API, Sharp)
+   - FFmpeg + MediaFX 영상 합성
+   - 이미지 재사용 시스템
+   - 목표 비용: 월간 $0-15
+   - 예상 시간: 2-3주
+   - 상세 내용: `DEVELOPMENT_PLAN.md`의 "체계적인 콘텐츠 생성 전략" 섹션 참조
+
+**단기 작업**:
+4. API 테스트 및 검증 (즉시 진행)
+5. 성과 분석 대시보드 구현
+6. Phase 2.5: Lighthouse 블로그 최적화
+7. API 키 암호화 구현 (보안 강화)
+
+### 알려진 제약사항
+
+1. **블로거 포스트 작성/수정 UI**: 구현 필요
+   - OAuth 토큰은 이미 준비되어 있음
+   - `createPost()`, `updatePost()` 서비스 함수는 구현되어 있지만 UI가 없음
+   - 다음 세션에서 우선 구현 예정
+
+2. **API 키 암호화**: 아직 구현되지 않음
+   - 현재는 평문 저장 (향후 암호화 구현 예정)
+   - 보안 강화를 위해 우선순위 중간
+
+3. **성과 분석 데이터**: 아직 수집되지 않음
+   - YouTube Analytics API 연동 필요
+   - 데이터 수집 및 저장 로직 구현 필요
+   - 우선순위 중간
+
+4. **음원/유튜브 모듈**: 아직 미구현
+   - Phase 3, 4 작업
+   - 블로거 모듈 완성 후 진행 예정
+
+---
+
+## 📞 문제 발생 시
+
+### 빌드 에러
+- TypeScript 타입 에러 확인
+- 사용하지 않는 import 제거
+- `npm run build`로 로컬 빌드 확인
+
+### 배포 에러
+- Vercel 환경 변수 확인
+- 빌드 로그 확인
+- 로컬에서 빌드 성공 확인 후 푸시
+
+### 인증 문제
+- Supabase 환경 변수 확인
+- OAuth 리다이렉트 URL 확인
+- 브라우저 콘솔 로그 확인
+
+---
+
+**문서 작성 완료**: 2024-12-03  
+**이번 세션 작업 완료**: 2024-12-03
+
+---
+
+## 💬 이번 세션 작업 상세 내역
+
+### 작업 일시
+- **시작**: 2024-12-03
+- **완료**: 2024-12-03
+
+### 주요 성과
+
+1. **랜딩페이지 구현** - 사용자 유입을 위한 첫인상 개선
+2. **대시보드 데이터 연동** - 실제 데이터 기반 대시보드 완성
+3. **API 키 발급 가이드** - 사용자 온보딩 경험 개선
+4. **블로거 모듈 기본 구조** - 핵심 기능의 기반 마련
+
+### 기술적 결정 사항
+
+1. **랜딩페이지 라우팅**
+   - `AuthRedirect` 컴포넌트로 인증 상태에 따른 자동 리다이렉트
+   - 인증된 사용자는 자동으로 `/dashboard`로 이동
+
+2. **대시보드 데이터 연동**
+   - React Query를 활용한 데이터 페칭 및 캐싱
+   - date-fns를 사용한 상대 시간 표시 (한국어 지원)
+
+3. **API 가이드 구조**
+   - 각 API 키별 독립적인 가이드 페이지
+   - 동적 라우팅 (`/settings/api-guide/:apiKeyType`)
+
+4. **블로거 모듈 아키텍처**
+   - 조회 기능과 뮤테이션 기능 분리
+   - OAuth 필요 여부를 명확히 구분
+
+### 사용자 요청사항 반영
+
+1. ✅ 랜딩페이지 우선 구현
+2. ✅ API 키 발급 가이드 추가 (Context7 포함)
+3. ✅ 블로거 모듈 기본 구조 구현
+4. ✅ 문서 기반 작업 진행
+5. ✅ 문서 정리 및 구조 최적화
+6. ✅ API 키 보이기/숨기기 토글 추가
+7. ✅ Google OAuth 2.0 인증 완전 구현
+8. ✅ Client ID/Secret 및 리디렉션 URI 설정 가이드 상세화
+
+### 다음 세션 준비 사항
+
+1. **현재 상태 확인**
+   - OAuth 인증이 정상 작동 중 (블로그 목록 조회 성공)
+   - Google 계정 연동 완료 상태
+   - 다음 작업: 포스트 작성/수정 UI 구현
+
+2. **문서 확인**
+   - `DEVELOPMENT_PLAN.md`에서 최신 체크리스트 확인
+   - 이 문서(`SESSION_CONTINUITY.md`)에서 작업 현황 확인
+
+3. **개발 환경**
+   - 로컬 개발 서버 실행 (`npm run dev`)
+   - OAuth 인증 테스트 완료
+   - 블로그 목록 조회 정상 작동 확인됨
 

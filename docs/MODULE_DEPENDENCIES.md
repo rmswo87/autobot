@@ -4,8 +4,12 @@
 
 이 문서는 Autobot 프로젝트의 모든 모듈 간 의존관계를 중앙에서 관리하는 마스터 맵입니다.
 
-**최종 수정일**: 2024-12-02  
-**버전**: 1.0.0
+**최종 수정일**: 2024-12-03  
+**버전**: 2.0.0  
+**마스터 문서**: `DEVELOPMENT_PLAN.md` (버전 3.0.0) ⭐
+
+> ⚠️ **이 문서는 모듈 의존성 상세 내용입니다.**  
+> **체크리스트와 Phase 진행 상황은 `DEVELOPMENT_PLAN.md`를 참조하세요.**
 
 ---
 
@@ -95,9 +99,11 @@ auth/
 ```
 settings/
 ├── shared/services/api/client.ts          # API 클라이언트
+├── shared/services/supabase/client.ts     # Supabase 클라이언트
 ├── shared/components/ui/*                # UI 컴포넌트
 ├── shared/utils/validators.ts             # 유효성 검사
 ├── features/auth/hooks/useAuth.ts        # 인증 확인 (간접)
+├── shared/services/encryption/            # API 키 암호화/복호화 (향후 추가)
 └── backend/src/shared/utils/encryption.ts  # 암호화 (백엔드)
 ```
 
@@ -135,10 +141,17 @@ settings/
 ```
 blogger/
 ├── shared/services/api/client.ts          # API 클라이언트
+├── shared/services/supabase/client.ts     # Supabase 클라이언트
 ├── shared/components/ui/*                # UI 컴포넌트
-├── features/settings/services/apiKeyService.ts  # API 키 조회 (간접)
+├── features/settings/services/apiKeyService.ts  # 사용자 API 키 조회 (멀티 테넌트)
+├── shared/services/encryption/            # API 키 복호화 (향후 추가)
 └── features/auth/hooks/useAuth.ts        # 인증 확인
 ```
+
+#### 멀티 테넌트 의존성
+- **사용자 API 키 사용**: 모든 외부 API 호출 시 `apiKeyService.getApiKeys()`로 사용자별 API 키 조회
+- **암호화/복호화**: API 키는 암호화 저장, 사용 시 복호화
+- **데이터 격리**: Supabase RLS로 사용자별 데이터 자동 필터링
 
 #### 의존받는 모듈
 ```
@@ -174,10 +187,17 @@ blogger/
 ```
 music/
 ├── shared/services/api/client.ts          # API 클라이언트
+├── shared/services/supabase/client.ts     # Supabase 클라이언트
+├── shared/services/ffmpeg/ffmpegService.ts  # FFmpeg 영상 합성 (Phase 3)
 ├── shared/components/ui/*                # UI 컴포넌트
-├── features/settings/services/apiKeyService.ts  # API 키 조회 (간접)
+├── features/settings/services/apiKeyService.ts  # 사용자 API 키 조회 (멀티 테넌트)
+├── shared/services/encryption/            # API 키 복호화 (향후 추가)
 └── features/auth/hooks/useAuth.ts        # 인증 확인
 ```
+
+#### 멀티 테넌트 의존성
+- **사용자 Suno API 키**: 음원 생성 시 사용자별 Suno API 키 사용
+- **사용자 OpenAI/Midjourney API 키**: 이미지/영상 생성 시 사용자별 API 키 사용
 
 #### 의존받는 모듈
 ```
@@ -213,11 +233,17 @@ music/
 ```
 youtube/
 ├── shared/services/api/client.ts          # API 클라이언트
+├── shared/services/supabase/client.ts     # Supabase 클라이언트
 ├── shared/components/ui/*                # UI 컴포넌트
-├── features/settings/services/apiKeyService.ts  # API 키 조회 (간접)
+├── features/settings/services/apiKeyService.ts  # 사용자 API 키 조회 (멀티 테넌트)
 ├── features/music/services/musicService.ts     # 음원 데이터
+├── shared/services/encryption/            # API 키 복호화 (향후 추가)
 └── features/auth/hooks/useAuth.ts        # 인증 확인
 ```
+
+#### 멀티 테넌트 의존성
+- **사용자 YouTube API 키**: 영상 업로드 시 사용자별 YouTube API 키 사용
+- **사용자 YouTube Analytics API 키**: 성과 분석 시 사용자별 Analytics API 키 사용
 
 #### 의존받는 모듈
 ```
@@ -429,4 +455,5 @@ shared/services/dataStore.ts
 | 날짜 | 버전 | 변경 내용 | 작성자 |
 |------|------|----------|--------|
 | 2024-12-02 | 1.0.0 | 초기 문서 작성 | Development Team |
+| 2024-12-03 | 2.0.0 | 멀티 테넌트 의존성 추가, FFmpeg 서비스 의존성 추가, Supabase 클라이언트 의존성 추가 | Development Team |
 
