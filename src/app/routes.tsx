@@ -1,5 +1,5 @@
 import { Routes as RouterRoutes, Route, Navigate } from 'react-router-dom'
-import { ProtectedRoute, AuthRedirect } from '@/shared/components/common'
+import { ProtectedRoute } from '@/shared/components/common'
 import { LoginForm, SignupForm } from '@/features/auth/components'
 import { SettingsPage, ApiGuidePage } from '@/features/settings/components'
 import { DashboardLayout } from '@/shared/components/layout/DashboardLayout'
@@ -19,14 +19,10 @@ const TempPage = ({ title }: { title: string }) => (
 export function Routes() {
   return (
     <RouterRoutes>
-      {/* Landing Page - 인증된 사용자는 자동으로 /dashboard로 리다이렉트 */}
+      {/* Landing Page */}
       <Route
         path="/"
-        element={
-          <AuthRedirect>
-            <LandingPage />
-          </AuthRedirect>
-        }
+        element={<LandingPage />}
       />
 
       {/* Public Routes */}
