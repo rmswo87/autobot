@@ -20,25 +20,25 @@ import { Loader2, X, Sparkles, Clock, Zap } from 'lucide-react'
 import { toast } from 'sonner'
 import type { BloggerBlog } from '../types'
 import { generateContentWithContext7 } from '../services/contentGenerationService'
-import { analyzeKeywords, extractKeywords, type DocumentKeyword } from '../services/keywordAnalysisService'
+import { extractKeywords } from '../services/keywordAnalysisService'
 import { saveScheduleConfig, getScheduleConfig, calculateNextPublishTime } from '../services/schedulingService'
 
 const autoPostSchema = z.object({
   // 완전 자동화 모드
-  fullAutoMode: z.boolean().default(false),
+  fullAutoMode: z.boolean(),
   publishTime: z.string().optional(), // HH:mm 형식
   
   // 키워드 입력 (자동화 모드일 때는 추천 키워드 사용)
   keywords: z.string().min(1, '키워드를 입력하거나 추천 키워드를 선택해주세요.'),
-  domain: z.string().default('default'),
+  domain: z.string(),
   
   // 수동 입력 (자동화 모드가 아닐 때만)
   title: z.string().optional(),
   content: z.string().optional(),
   
   // 옵션
-  includeImage: z.boolean().default(true),
-  autoSubmitToSearchConsole: z.boolean().default(false),
+  includeImage: z.boolean(),
+  autoSubmitToSearchConsole: z.boolean(),
 })
 
 type AutoPostFormValues = z.infer<typeof autoPostSchema>
@@ -54,7 +54,6 @@ export function AutoPostForm({ blog, onSuccess, onCancel }: AutoPostFormProps) {
   const [isGenerating, setIsGenerating] = useState(false)
   const [recommendedKeywords, setRecommendedKeywords] = useState<string[]>([])
   const [generatedContent, setGeneratedContent] = useState<{ title: string; content: string; labels: string[] } | null>(null)
-  const [scheduleConfig, setScheduleConfig] = useState<{ enabled: boolean; publishTime: string } | null>(null)
 
   const form = useForm<AutoPostFormValues>({
     resolver: zodResolver(autoPostSchema),
@@ -77,7 +76,6 @@ export function AutoPostForm({ blog, onSuccess, onCancel }: AutoPostFormProps) {
       try {
         const config = await getScheduleConfig(blog.id)
         if (config) {
-          setScheduleConfig(config)
           form.setValue('fullAutoMode', config.enabled && config.autoGenerate)
           form.setValue('publishTime', config.publishTime)
           form.setValue('domain', config.domain || 'default')

@@ -5,7 +5,7 @@
  */
 
 import { calculateKeywordScores, filterRecommendedKeywords, type KeywordScore, type BlogAnalysis } from './keywordScoringService'
-import { searchKeywords, type SearchResult } from './keywordSearchService'
+import { searchKeywords } from './keywordSearchService'
 import { supabase } from '@/shared/services/supabase/client'
 
 export interface RecommendedKeyword extends KeywordScore {
@@ -34,7 +34,6 @@ export async function generateKeywordRecommendations(
   options: KeywordRecommendationOptions = {}
 ): Promise<RecommendedKeyword[]> {
   const {
-    domain,
     minScore = 50,
     maxResults = 20,
     prioritizeLongtail = true,

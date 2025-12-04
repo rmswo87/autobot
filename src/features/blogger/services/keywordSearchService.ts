@@ -133,7 +133,7 @@ function generateRelatedKeywords(keyword: string): string[] {
  * Google Trends API 또는 서드파티 API 사용 예정
  */
 export async function searchTrendingKeywords(
-  domain?: string
+  _domain?: string
 ): Promise<SearchResult[]> {
   // TODO: Google Trends API 연동
   // 현재는 빈 배열 반환

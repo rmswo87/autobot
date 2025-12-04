@@ -187,7 +187,7 @@ export function DashboardPage() {
                 { key: 'suno_api_key', label: 'Suno API Key', required: false, feature: '음원 생성' },
                 { key: 'context7_api_key', label: 'Context7 API Key', required: false, feature: '고품질 콘텐츠' },
                 { key: 'openai_api_key', label: 'OpenAI API Key', required: false, feature: 'AI 기능' },
-              ].map(({ key, label, required, feature }) => {
+              ].map(({ key, label, required }) => {
                 const isSet = apiKeys?.[key as keyof typeof apiKeys] ?? false
                 return (
                   <div

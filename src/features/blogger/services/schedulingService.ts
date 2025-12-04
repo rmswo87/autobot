@@ -101,7 +101,7 @@ export async function getScheduleConfig(blogId: string): Promise<ScheduleConfig 
 /**
  * 다음 발행 시간 계산
  */
-export function calculateNextPublishTime(publishTime: string, timezone: string = 'Asia/Seoul'): Date {
+export function calculateNextPublishTime(publishTime: string, _timezone: string = 'Asia/Seoul'): Date {
   const [hours, minutes] = publishTime.split(':').map(Number)
   const now = new Date()
   

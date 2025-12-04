@@ -44,7 +44,7 @@ export async function reconstructBlogPost(
     .map((k) => k.keyword)
 
   // 2. SEO 최적화된 제목 생성
-  const title = generateSEOTitle(sortedKeywords, originalContent)
+  const title = generateSEOTitle(sortedKeywords)
 
   // 3. 본문 재구성
   const reconstructedContent = await reconstructContent({
@@ -59,7 +59,6 @@ export async function reconstructBlogPost(
 
   // 5. 메타 설명 생성
   const metaDescription = generateMetaDescription(
-    title,
     reconstructedContent,
     sortedKeywords
   )
@@ -92,7 +91,7 @@ export async function reconstructBlogPost(
 /**
  * SEO 최적화된 제목 생성
  */
-function generateSEOTitle(keywords: string[], originalContent: string): string {
+function generateSEOTitle(keywords: string[]): string {
   // 주요 키워드를 앞쪽에 배치
   const mainKeyword = keywords[0] || '주제'
   
@@ -261,7 +260,6 @@ function generateOptimizedH2Tags(keywords: string[], content: string): string[] 
  * 메타 설명 생성
  */
 function generateMetaDescription(
-  title: string,
   content: string,
   keywords: string[]
 ): string {

@@ -156,7 +156,7 @@ function getBacklinkText(platform: string, blogPostUrl: string): string {
  */
 async function deployToPlatformAPI(
   platform: string,
-  params: { title: string; content: string }
+  _params: { title: string; content: string }
 ): Promise<string> {
   // TODO: 각 플랫폼 API 연동
   // - LinkedIn API v2
@@ -174,7 +174,7 @@ async function deployToPlatformAPI(
  * 배포 상태 조회
  */
 export async function getDeploymentStatus(
-  deploymentId: string
+  _deploymentId: string
 ): Promise<BacklinkDeployment | null> {
   // TODO: Supabase에서 배포 상태 조회
   return null
@@ -184,7 +184,7 @@ export async function getDeploymentStatus(
  * 배포 재시도
  */
 export async function retryDeployment(
-  deploymentId: string
+  _deploymentId: string
 ): Promise<BacklinkDeployment> {
   // TODO: 실패한 배포 재시도
   throw new Error('Not implemented')

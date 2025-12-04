@@ -31,7 +31,7 @@ export interface GeneratedContent {
 export async function generateContentWithContext7(
   request: ContentGenerationRequest
 ): Promise<GeneratedContent> {
-  const { keywords, domain = 'default', keywordAnalysis, targetLength = 2000, includeImage = true } = request
+  const { keywords, domain = 'default', includeImage = true } = request
 
   // 1. 키워드 기반 제목 생성
   const title = generateTitleFromKeywords(keywords, getDomainPattern(domain))
@@ -46,7 +46,6 @@ export async function generateContentWithContext7(
     keywords,
     domain,
     mainKeyword,
-    targetLength,
     includeImage,
   })
 
@@ -79,12 +78,12 @@ export async function generateContentWithContext7(
  * 도메인별 패턴 가져오기
  */
 function getDomainPattern(domain: string): string | undefined {
-  const patterns: Record<string, string> = {
+  const patterns: Record<string, string | undefined> = {
     ai: '~이란?',
     tech: '~이란?',
     default: undefined,
   }
-  return patterns[domain] || patterns.default
+  return patterns[domain] ?? patterns.default
 }
 
 /**
@@ -96,10 +95,9 @@ async function generateContentBody(params: {
   keywords: string[]
   domain: string
   mainKeyword: string
-  targetLength: number
   includeImage: boolean
 }): Promise<string> {
-  const { keywords, mainKeyword, targetLength, includeImage } = params
+  const { keywords, mainKeyword, includeImage } = params
 
   // 임시 콘텐츠 (실제로는 Context7 MCP 호출)
   let content = `<h2>${mainKeyword}</h2>\n\n`

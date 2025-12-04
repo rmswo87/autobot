@@ -5,8 +5,8 @@ import { Input } from '@/shared/components/ui/input'
 import { Textarea } from '@/shared/components/ui/textarea'
 import { Label } from '@/shared/components/ui/label'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
-import { Search, TrendingUp, Filter, Download, RefreshCw } from 'lucide-react'
-import { analyzeKeywords, extractKeywords, aggregateDocumentKeywords, type DocumentKeyword, type KeywordFrequency } from '../services/keywordAnalysisService'
+import { Search, TrendingUp, Filter } from 'lucide-react'
+import { analyzeKeywords, extractKeywords, type KeywordFrequency, type DocumentKeyword } from '../services/keywordAnalysisService'
 import { toast } from 'sonner'
 
 interface KeywordAnalyzerProps {
@@ -251,11 +251,8 @@ export function KeywordAnalyzer({ onKeywordSelect }: KeywordAnalyzerProps) {
                   <XAxis dataKey="keyword" angle={-45} textAnchor="end" height={100} />
                   <YAxis />
                   <Tooltip
-                    formatter={(value: number, name: string, props: any) => [
-                      value,
-                      name === 'frequency' ? '빈도' : '문서 수',
-                    ]}
-                    labelFormatter={(label, payload) => payload?.[0]?.payload?.fullKeyword || label}
+                    formatter={(value: number) => [value, '값']}
+                    labelFormatter={(label) => label}
                   />
                   <Legend />
                   <Bar dataKey="frequency" fill="#0088FE" name="빈도" />
@@ -279,21 +276,18 @@ export function KeywordAnalyzer({ onKeywordSelect }: KeywordAnalyzerProps) {
                     cx="50%"
                     cy="50%"
                     labelLine={false}
-                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
                     outerRadius={100}
                     fill="#8884d8"
                     dataKey="value"
                   >
-                    {pieData.map((entry, index) => (
+                    {pieData.map((_, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
                   <Tooltip
-                    formatter={(value: number, name: string, props: any) => [
-                      value,
-                      '빈도',
-                    ]}
-                    labelFormatter={(label, payload) => payload?.[0]?.payload?.fullName || label}
+                    formatter={(value: number) => [value, '빈도']}
+                    labelFormatter={(label) => label}
                   />
                 </PieChart>
               </ResponsiveContainer>

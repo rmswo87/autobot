@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { useBlogs, usePosts, usePost } from '../hooks'
+import { useBlogs, usePosts } from '../hooks'
 import { bloggerOAuthService } from '../services/bloggerOAuthService'
 import { CreatePostForm } from './CreatePostForm'
 import { EditPostForm } from './EditPostForm'

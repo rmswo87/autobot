@@ -62,7 +62,6 @@ export function optimizeSEO(
     h2Tags,
     keywords,
     metaDescription,
-    seoScore,
   })
 
   return {
@@ -142,11 +141,11 @@ function optimizeH2Tags(content: string, keywords: string[]): string[] {
   // 첫 번째 H2에 주요 키워드 포함 확인
   if (existingH2s.length > 0) {
     const firstH2 = existingH2s[0]
-    if (keywords.length > 0 && !firstH2.includes(keywords[0])) {
+    if (firstH2 && keywords.length > 0 && !firstH2.includes(keywords[0])) {
       // 키워드 포함하도록 수정
       const h2Content = firstH2.replace(/<[^>]+>/g, '')
       h2Tags.push(`<h2>${keywords[0]}: ${h2Content}</h2>`)
-    } else {
+    } else if (firstH2) {
       h2Tags.push(firstH2)
     }
   } else if (keywords.length > 0) {
@@ -196,7 +195,7 @@ function generateImageAltTexts(content: string, keywords: string[]): string[] {
  * 내부 링크 제안
  */
 function suggestInternalLinks(
-  content: string,
+  _content: string,
   keywords: string[],
   targetUrl?: string
 ): string[] {
@@ -274,9 +273,8 @@ function generateRecommendations(params: {
   h2Tags: string[]
   keywords: string[]
   metaDescription: string
-  seoScore: number
 }): string[] {
-  const { title, content, h2Tags, keywords, metaDescription, seoScore } = params
+  const { title, content, h2Tags, keywords, metaDescription } = params
   const recommendations: string[] = []
 
   // 제목 개선

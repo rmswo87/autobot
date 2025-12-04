@@ -8,7 +8,6 @@ import {
   TrendingUp, 
   Star, 
   CheckCircle2, 
-  XCircle,
   RefreshCw,
   Sparkles
 } from 'lucide-react'
@@ -21,17 +20,12 @@ import {
 } from '../services/keywordRecommendationService'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { toast } from 'sonner'
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 
 interface KeywordRecommendationDashboardProps {
   onKeywordSelect?: (keyword: string) => void
 }
 
-const COLORS = {
-  high: '#10b981', // green
-  medium: '#f59e0b', // amber
-  low: '#ef4444', // red
-}
 
 export function KeywordRecommendationDashboard({ 
   onKeywordSelect 
